@@ -1,37 +1,51 @@
-package com.ISA.OnlyBunsBackend.model;
+package com.ISA.OnlyBunsBackend.dto;
 
 import com.ISA.OnlyBunsBackend.enums.UserType;
+import com.ISA.OnlyBunsBackend.model.Post;
+import com.ISA.OnlyBunsBackend.model.User;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class User {
+public class UserDTO {
     private String username;
     private String password;
     private String firstName;
     private String lastName;
     private String email;
     private UserType type;
-    private Location location;
+    private LocationDTO location;
     private boolean isActivated = false;
-    private List<User> followers;
-    private List<User> followings;
-    private List<Post> posts;
+    private List<UserDTO> followers;
+    private List<UserDTO> followings;
+    private List<PostDTO> posts;
 
-    public User(){}
-    public User(String username, String password, String firstName, String lastName, String email, UserType type, Location location, boolean isActivated, List<User> followers, List<User> followings, List<Post> posts)
-    {
-        super();
-        this.username = username;
-        this.password = password;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.type = type;
-        this.location = location;
-        this.isActivated = isActivated;
-        this.followers = followers;
-        this.followings = followings;
-        this.posts = posts;
+    public UserDTO() {
+    }
+
+    public UserDTO(User user) {
+        this.username = user.getUsername();
+        this.password = user.getPassword();
+        this.firstName = user.getFirstName();
+        this.lastName = user.getLastName();
+        this.email = user.getEmail();
+        this.type = user.getType();
+        this.location = new LocationDTO(user.getLocation());
+        this.isActivated = user.isActivated();
+        this.followers = new ArrayList<>();
+        for (User follower : user.getFollowers()) {
+            this.followers.add(new UserDTO(follower));
+        }
+
+        this.followings = new ArrayList<>();
+        for (User following : user.getFollowings()) {
+            this.followings.add(new UserDTO(following));
+        }
+
+        this.posts = new ArrayList<>();
+        for (Post post : user.getPosts()) {
+            this.posts.add(new PostDTO(post));
+        }
     }
 
     public String getUsername() {
@@ -82,11 +96,11 @@ public class User {
         this.type = type;
     }
 
-    public Location getLocation() {
+    public LocationDTO getLocation() {
         return location;
     }
 
-    public void setLocation(Location location) {
+    public void setLocation(LocationDTO location) {
         this.location = location;
     }
 
@@ -98,27 +112,27 @@ public class User {
         isActivated = activated;
     }
 
-    public List<User> getFollowers() {
+    public List<UserDTO> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(List<User> followers) {
+    public void setFollowers(List<UserDTO> followers) {
         this.followers = followers;
     }
 
-    public List<User> getFollowings() {
+    public List<UserDTO> getFollowings() {
         return followings;
     }
 
-    public void setFollowings(List<User> followings) {
+    public void setFollowings(List<UserDTO> followings) {
         this.followings = followings;
     }
 
-    public List<Post> getPosts() {
+    public List<PostDTO> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public void setPosts(List<PostDTO> posts) {
         this.posts = posts;
     }
 }
