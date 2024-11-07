@@ -1,10 +1,23 @@
 package com.ISA.OnlyBunsBackend.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Location {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @Column(name = "longitude", nullable = false)
     private double longitude;
+
+    @Column(name = "latitude", nullable = false)
     private double latitude;
+
+    @Column(name = "country", nullable = false)
     private String country;
+
+    @Column(name = "city", nullable = false)
     private String city;
 
     public Location() {
@@ -56,5 +69,32 @@ public class Location {
 
     public void setCity(String city) {
         this.city = city;
+    }
+
+    @Override
+    public String toString() {
+        return "Location [id=" + id +
+                ", longitude=" + longitude +
+                ", latitude=" + latitude +
+                ", country=" + country +
+                ", city=" + city +
+                "]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Location location = (Location) obj;
+        return id == location.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
     }
 }
