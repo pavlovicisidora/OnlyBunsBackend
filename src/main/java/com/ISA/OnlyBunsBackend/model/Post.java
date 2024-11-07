@@ -24,14 +24,17 @@ public class Post {
     @Column(name = "timeOfPublishing", nullable = false)
     private LocalDateTime timeOfPublishing;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "comments", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Comment> comments;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "userLikes", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<User> userLikes;
 
+    @Column(name = "deleted",nullable = false)
+    private boolean deleted;
+
     public Post() {}
-    public Post(Integer id, String description, String image, Location location, LocalDateTime timeOfPublishing, List<Comment> comments, List<User> userLikes) {
+    public Post(Integer id, String description, String image, Location location, LocalDateTime timeOfPublishing, List<Comment> comments, List<User> userLikes,boolean deleted) {
         this.id = id;
         this.description = description;
         this.image = image;
@@ -39,6 +42,7 @@ public class Post {
         this.timeOfPublishing = timeOfPublishing;
         this.comments = comments;
         this.userLikes = userLikes;
+        this.deleted = deleted;
     }
 
     public String getDescription() {
@@ -97,6 +101,14 @@ public class Post {
         this.comments = comments;
     }
 
+    public boolean isDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        this.deleted = deleted;
+    }
+
     @Override
     public int hashCode() {
         return 1337;
@@ -111,6 +123,7 @@ public class Post {
                 ", timeOfPublishing=" + timeOfPublishing +
                 ", comments=" + (comments != null ? comments.size() : "null") +
                 ", userLikes=" + (userLikes != null ? userLikes.size() : "null") +
+                ", deleted=" + deleted +
                 "]";
     }
 
