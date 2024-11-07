@@ -1,9 +1,14 @@
 package com.ISA.OnlyBunsBackend.model;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
+
 public class Post {
+
     private int id;
     private String description;
     private String image;
