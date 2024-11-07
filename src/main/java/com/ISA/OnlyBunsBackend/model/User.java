@@ -1,20 +1,50 @@
 package com.ISA.OnlyBunsBackend.model;
 
 import com.ISA.OnlyBunsBackend.enums.UserType;
+import jakarta.persistence.*;
 
 import java.util.List;
+import java.util.Objects;
 
+@Entity
 public class User {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @Column(name = "username", nullable = false, unique = true)
     private String username;
+
+    @Column(name = "password", nullable = false)
     private String password;
+
+    @Column(name = "firstName", nullable = false)
     private String firstName;
+
+    @Column(name = "lastName", nullable = false)
     private String lastName;
+
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column(name = "type", nullable = false)
     private UserType type;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location")
     private Location location;
+
+    @Column(name = "isActivated", nullable = false)
     private boolean isActivated = false;
+
+    @OneToMany(fetch = FetchType.LAZY)
     private List<User> followers;
+
+    @OneToMany(fetch = FetchType.LAZY)
     private List<User> followings;
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Post> posts;
 
     public User(){}
@@ -120,5 +150,41 @@ public class User {
 
     public void setPosts(List<Post> posts) {
         this.posts = posts;
+    }
+
+    @Override
+    public String toString() {
+        return "User [id=" + id +
+                ", username=" + username +
+                ", firstName=" + firstName +
+                ", lastName=" + lastName +
+                ", email=" + email +
+                ", type=" + type +
+                ", location=" + (location != null ? location.toString() : "null") +
+                ", isActivated=" + isActivated +
+                ", followers=" + (followers != null ? followers.size() : "null") +
+                ", followings=" + (followings != null ? followings.size() : "null") +
+                ", posts=" + (posts != null ? posts.size() : "null") +
+                "]";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User u = (User) o;
+        if (u.username == null || username == null) {
+            return false;
+        }
+        return Objects.equals(username, u.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(username);
     }
 }

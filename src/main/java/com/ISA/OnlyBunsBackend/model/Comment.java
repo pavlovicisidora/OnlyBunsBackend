@@ -1,8 +1,18 @@
 package com.ISA.OnlyBunsBackend.model;
 
+import jakarta.persistence.*;
+
+@Entity
 public class Comment {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location")
     private User user;
+
+    @Column(name = "text", nullable = false)
     private String text;
 
     public Comment() {
@@ -36,5 +46,30 @@ public class Comment {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    @Override
+    public String toString() {
+        return "Comment [id=" + id +
+                ", user=" + (user != null ? user.getUsername() : "null") +
+                ", text=" + text +
+                "]";
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Comment comment = (Comment) obj;
+        return id == comment.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Integer.hashCode(id);
     }
 }
