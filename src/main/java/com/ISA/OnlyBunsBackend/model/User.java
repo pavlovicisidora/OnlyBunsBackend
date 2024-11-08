@@ -3,10 +3,10 @@ package com.ISA.OnlyBunsBackend.model;
 import com.ISA.OnlyBunsBackend.enums.UserType;
 import jakarta.persistence.*;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @Entity
+@Table(name = "users")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,23 +32,33 @@ public class User {
     private UserType type;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "location")
+    @JoinColumn(name = "location_id")
     private Location location;
 
     @Column(name = "isActivated", nullable = false)
     private boolean isActivated = false;
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<User> followers;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_relations",
+            joinColumns = @JoinColumn(name = "follower_id"),
+            inverseJoinColumns = @JoinColumn(name = "followed_user_id")
+    )
+    private Set<User> followings = new HashSet<>();
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "user_relations",
+            joinColumns = @JoinColumn(name = "followed_user_id"),
+            inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    private Set<User> followers = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY)
-    private List<User> followings;
 
-    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Post> posts;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<Post> posts = new HashSet<>();
 
     public User(){}
-    public User(String username, String password, String firstName, String lastName, String email, UserType type, Location location, boolean isActivated, List<User> followers, List<User> followings, List<Post> posts)
+    public User(String username, String password, String firstName, String lastName, String email, UserType type, Location location, boolean isActivated, Set<User> followers, Set<User> followings, Set<Post> posts)
     {
         super();
         this.username = username;
@@ -128,27 +138,35 @@ public class User {
         isActivated = activated;
     }
 
-    public List<User> getFollowers() {
+    public Set<User> getFollowers() {
         return followers;
     }
 
-    public void setFollowers(List<User> followers) {
+    public void setFollowers(Set<User> followers) {
         this.followers = followers;
     }
 
-    public List<User> getFollowings() {
+    public Set<User> getFollowings() {
         return followings;
     }
 
-    public void setFollowings(List<User> followings) {
+    public void setFollowings(Set<User> followings) {
         this.followings = followings;
     }
 
-    public List<Post> getPosts() {
+    public Set<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setPosts(Set<Post> posts) {
         this.posts = posts;
     }
 
@@ -186,5 +204,13 @@ public class User {
     @Override
     public int hashCode() {
         return Objects.hashCode(username);
+    }
+
+    public int getPostCount() {
+        return posts != null ? posts.size() : 0;
+    }
+
+    public int getFollowersCount() {
+        return followers != null ? followers.size() : 0;
     }
 }

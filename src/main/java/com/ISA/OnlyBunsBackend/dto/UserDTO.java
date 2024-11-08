@@ -8,60 +8,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class UserDTO {
-    private String username;
-    private String password;
+    private Integer id;
     private String firstName;
     private String lastName;
     private String email;
-    private UserType type;
-    private LocationDTO location;
-    private boolean isActivated = false;
-    private List<UserDTO> followers;
-    private List<UserDTO> followings;
-    private List<PostDTO> posts;
+    private int postCount;
+    private int followersCount;
 
     public UserDTO() {
     }
 
+    public UserDTO(Integer id, String firstName, String lastName, String email, int postCount, int followersCount) {
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.postCount = postCount;
+        this.followersCount = followersCount;
+    }
+
     public UserDTO(User user) {
-        this.username = user.getUsername();
-        this.password = user.getPassword();
+        this.id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-        this.type = user.getType();
-        this.location = new LocationDTO(user.getLocation());
-        this.isActivated = user.isActivated();
-        this.followers = new ArrayList<>();
-        for (User follower : user.getFollowers()) {
-            this.followers.add(new UserDTO(follower));
-        }
 
-        this.followings = new ArrayList<>();
-        for (User following : user.getFollowings()) {
-            this.followings.add(new UserDTO(following));
-        }
-
-        this.posts = new ArrayList<>();
-        for (Post post : user.getPosts()) {
-            this.posts.add(new PostDTO(post));
-        }
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
+        this.postCount = user.getPostCount();
+        this.followersCount = user.getFollowersCount();
     }
 
     public String getFirstName() {
@@ -88,51 +61,27 @@ public class UserDTO {
         this.email = email;
     }
 
-    public UserType getType() {
-        return type;
+    public int getPostCount() {
+        return postCount;
     }
 
-    public void setType(UserType type) {
-        this.type = type;
+    public void setPostCount(int postCount) {
+        this.postCount = postCount;
     }
 
-    public LocationDTO getLocation() {
-        return location;
+    public int getFollowersCount() {
+        return followersCount;
     }
 
-    public void setLocation(LocationDTO location) {
-        this.location = location;
+    public void setFollowersCount(int followersCount) {
+        this.followersCount = followersCount;
     }
 
-    public boolean isActivated() {
-        return isActivated;
+    public Integer getId() {
+        return id;
     }
 
-    public void setActivated(boolean activated) {
-        isActivated = activated;
-    }
-
-    public List<UserDTO> getFollowers() {
-        return followers;
-    }
-
-    public void setFollowers(List<UserDTO> followers) {
-        this.followers = followers;
-    }
-
-    public List<UserDTO> getFollowings() {
-        return followings;
-    }
-
-    public void setFollowings(List<UserDTO> followings) {
-        this.followings = followings;
-    }
-
-    public List<PostDTO> getPosts() {
-        return posts;
-    }
-
-    public void setPosts(List<PostDTO> posts) {
-        this.posts = posts;
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
