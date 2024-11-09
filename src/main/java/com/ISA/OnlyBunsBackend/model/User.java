@@ -31,7 +31,7 @@ public class User {
     @Column(name = "type", nullable = false)
     private UserType type;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
     private Location location;
 

@@ -25,7 +25,7 @@ public class Post {
     @Column(name = "image", nullable = false)
     private String image;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "location_id")
     private Location location;
 
