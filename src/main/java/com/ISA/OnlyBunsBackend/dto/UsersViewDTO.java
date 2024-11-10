@@ -7,7 +7,7 @@ import com.ISA.OnlyBunsBackend.model.User;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserDTO {
+public class UsersViewDTO {
     private Integer id;
     private String firstName;
     private String lastName;
@@ -15,10 +15,10 @@ public class UserDTO {
     private int postCount;
     private int followersCount;
 
-    public UserDTO() {
+    public UsersViewDTO() {
     }
 
-    public UserDTO(Integer id, String firstName, String lastName, String email, int postCount, int followersCount) {
+    public UsersViewDTO(Integer id, String firstName, String lastName, String email, int postCount, int followersCount) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -27,7 +27,7 @@ public class UserDTO {
         this.followersCount = followersCount;
     }
 
-    public UserDTO(User user) {
+    public UsersViewDTO(User user) {
         this.id = user.getId();
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
