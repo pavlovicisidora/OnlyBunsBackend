@@ -1,10 +1,12 @@
 package com.ISA.OnlyBunsBackend.service;
 
-import com.ISA.OnlyBunsBackend.dto.UserDTO;
+import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
+import org.springframework.data.repository.query.Param;
+
 import java.util.List;
 
 public interface UserService {
     Integer getFollowersCount(Integer userId);
-    public List<UserDTO> getAllUsers();
-    public List<UserDTO> searchUsers(String firstName, String lastName, String email, Integer minPosts, Integer maxPosts);
+    public List<UsersViewDTO> getAllUsers();
+    public List<UsersViewDTO> searchUsers(String firstName, String lastName, String email, String minPosts, String maxPosts, String sortBy, String sortDirection);
 }
