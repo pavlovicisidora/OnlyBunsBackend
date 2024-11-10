@@ -7,6 +7,6 @@ import java.util.List;
 
 public interface UserService {
     Integer getFollowersCount(Integer userId);
-    public List<UsersViewDTO> getAllUsers();
-    public List<UsersViewDTO> searchUsers(String firstName, String lastName, String email, String minPosts, String maxPosts, String sortBy, String sortDirection);
+    List<UsersViewDTO> getAllUsers();
+    List<UsersViewDTO> searchUsers(String firstName, String lastName, String email, String minPosts, String maxPosts, String sortBy, String sortDirection);
 }
