@@ -27,7 +27,6 @@ public class Post {
 
 
     @ManyToOne(fetch = FetchType.EAGER)
-
     @JoinColumn(name = "location_id")
     private Location location;
 

@@ -32,20 +32,18 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
-    public List<User> loadAll() {
-        return this.userService.findAll();
+    //@PreAuthorize("hasRole('ADMIN')")
+    public List<UsersViewDTO> getAllUsers() {
+        return userService.getAllUsers();
     }
 
     @GetMapping("/userInfo")
-    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    //@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public User user(Principal user) {
         return this.userService.findByUsername(user.getName());
     }
 
-    public List<UsersViewDTO> getAllUsers() {
-        return userService.getAllUsers();
-    }
+
 
     @GetMapping("/search")
     public List<UsersViewDTO> searchUsers(@RequestParam(required = false) String firstName,
