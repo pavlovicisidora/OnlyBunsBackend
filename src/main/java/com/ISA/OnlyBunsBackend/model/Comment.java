@@ -27,7 +27,9 @@ public class Comment {
     public Comment() {
     }
 
+
     public Comment(int id, User user, Post post, String text, LocalDateTime createdAt) {
+
         this.id = id;
         this.user = user;
         this.post = post;
@@ -66,6 +68,7 @@ public class Comment {
     public void setPost(Post post) {
         this.post = post;
     }
+
 
     public LocalDateTime getCreatedAt() {
         return createdAt;

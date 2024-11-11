@@ -7,7 +7,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
+
+
 public interface UserRepository extends JpaRepository<User, Integer> {
+
+    User findByUsername(String username);
+
     @Query("SELECT COUNT(u) FROM User u JOIN u.followers f WHERE f.id = :userId")
     Integer countFollowers(@Param("userId") Integer userId);
 

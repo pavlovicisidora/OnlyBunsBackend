@@ -25,12 +25,15 @@ public class Post {
     @Column(name = "image", nullable = false)
     private String image;
 
+
     @ManyToOne(fetch = FetchType.EAGER)
+
     @JoinColumn(name = "location_id")
     private Location location;
 
     @Column(name = "timeOfPublishing", nullable = false)
     private LocalDateTime timeOfPublishing;
+
 
     @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
@@ -123,6 +126,7 @@ public class Post {
         this.user = user;
     }
 
+
     public boolean isDeleted() {
         return isDeleted;
     }
@@ -163,5 +167,5 @@ public class Post {
         }
         Post c = (Post) obj;
         return id != null && id.equals(c.getId());
-    }
+        }
 }
