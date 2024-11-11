@@ -3,13 +3,21 @@ package com.ISA.OnlyBunsBackend.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "description", nullable = false)
     private String description;
@@ -18,21 +26,28 @@ public class Post {
     private String image;
 
     @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "location")
+    @JoinColumn(name = "location_id")
     private Location location;
 
     @Column(name = "timeOfPublishing", nullable = false)
     private LocalDateTime timeOfPublishing;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Comment> comments;
+    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Set<Comment> comments = new HashSet<>();
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<User> userLikes;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(
+            name = "post_user_likes",
+            joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    )
+    private Set<User> userLikes = new HashSet<>();
+
 
     public Post() {}
-    public Post(Integer id, String description, String image, Location location, LocalDateTime timeOfPublishing, List<Comment> comments, List<User> userLikes) {
+    public Post(Integer id, User user, String description, String image, Location location, LocalDateTime timeOfPublishing, Set<Comment> comments, Set<User> userLikes) {
         this.id = id;
+        this.user = user;
         this.description = description;
         this.image = image;
         this.location = location;
@@ -81,20 +96,28 @@ public class Post {
         this.timeOfPublishing = timeOfPublishing;
     }
 
-    public List<User> getUserLikes() {
+    public Set<User> getUserLikes() {
         return userLikes;
     }
 
-    public void setUserLikes(List<User> userLikes) {
+    public void setUserLikes(Set<User> userLikes) {
         this.userLikes = userLikes;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
@@ -124,5 +147,5 @@ public class Post {
         }
         Post c = (Post) obj;
         return id != null && id.equals(c.getId());
-    }
+        }
 }

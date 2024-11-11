@@ -1,6 +1,6 @@
 package com.ISA.OnlyBunsBackend.mapper;
 
-import com.ISA.OnlyBunsBackend.dto.UserDTO;
+import com.ISA.OnlyBunsBackend.dto.UserRegistration;
 import com.ISA.OnlyBunsBackend.model.User;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,11 +15,11 @@ public class UserDTOMapper {
         this.modelMapper = modelMapper;
     }
 
-    public static User fromDTOtoUser(UserDTO dto) {
+    public static User fromDTOtoUser(UserRegistration dto) {
         return modelMapper.map(dto, User.class);
     }
 
-    public static UserDTO fromUserToDTO(User user) {
-        return modelMapper.map(user, UserDTO.class);
+    public static UserRegistration fromUserToDTO(User user) {
+        return modelMapper.map(user, UserRegistration.class);
     }
 }

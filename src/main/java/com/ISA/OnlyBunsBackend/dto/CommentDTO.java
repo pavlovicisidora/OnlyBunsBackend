@@ -1,11 +1,10 @@
 package com.ISA.OnlyBunsBackend.dto;
 
 import com.ISA.OnlyBunsBackend.model.Comment;
-import com.ISA.OnlyBunsBackend.model.User;
 
 public class CommentDTO {
     private int id;
-    private UserDTO user;
+    private UserRegistration user;
     private String text;
 
     public CommentDTO() {
@@ -13,7 +12,7 @@ public class CommentDTO {
 
     public CommentDTO(Comment comment) {
         id = comment.getId();
-        user = new UserDTO(comment.getUser());
+        user = new UserRegistration(comment.getUser());
         text = comment.getText();
     }
 
@@ -25,11 +24,11 @@ public class CommentDTO {
         this.id = id;
     }
 
-    public UserDTO getUser() {
+    public UserRegistration getUser() {
         return user;
     }
 
-    public void setUser(UserDTO user) {
+    public void setUser(UserRegistration user) {
         this.user = user;
     }
 

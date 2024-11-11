@@ -1,7 +1,6 @@
 package com.ISA.OnlyBunsBackend.dto;
 
 import com.ISA.OnlyBunsBackend.model.Comment;
-import com.ISA.OnlyBunsBackend.model.Location;
 import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.model.User;
 
@@ -16,7 +15,7 @@ public class PostDTO {
     private LocationDTO location;
     private LocalDateTime timeOfPublishing;
     private List<CommentDTO> comments;
-    private List<UserDTO> userLikes;
+    private List<UserRegistration> userLikes;
 
     public PostDTO() {
     }
@@ -33,7 +32,7 @@ public class PostDTO {
 
         this.userLikes = new ArrayList<>();
         for (User user : post.getUserLikes()) {
-            this.userLikes.add(new UserDTO(user));
+            this.userLikes.add(new UserRegistration(user));
         }
     }
 
@@ -85,11 +84,11 @@ public class PostDTO {
         this.comments = comments;
     }
 
-    public List<UserDTO> getUserLikes() {
+    public List<UserRegistration> getUserLikes() {
         return userLikes;
     }
 
-    public void setUserLikes(List<UserDTO> userLikes) {
+    public void setUserLikes(List<UserRegistration> userLikes) {
         this.userLikes = userLikes;
     }
 }
