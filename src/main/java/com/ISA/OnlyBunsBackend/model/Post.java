@@ -25,17 +25,20 @@ public class Post {
     @Column(name = "image", nullable = false)
     private String image;
 
-    @OneToOne(fetch = FetchType.EAGER)
+
+    @ManyToOne(fetch = FetchType.EAGER)
+
     @JoinColumn(name = "location_id")
     private Location location;
 
     @Column(name = "timeOfPublishing", nullable = false)
     private LocalDateTime timeOfPublishing;
 
-    @OneToMany(mappedBy = "post", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
     private Set<Comment> comments = new HashSet<>();
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "post_user_likes",
             joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
@@ -43,9 +46,11 @@ public class Post {
     )
     private Set<User> userLikes = new HashSet<>();
 
+    @Column(name = "isDeleted", nullable = false)
+    private boolean isDeleted = false;
 
     public Post() {}
-    public Post(Integer id, User user, String description, String image, Location location, LocalDateTime timeOfPublishing, Set<Comment> comments, Set<User> userLikes) {
+    public Post(Integer id, User user, String description, String image, Location location, LocalDateTime timeOfPublishing, Set<Comment> comments, Set<User> userLikes, boolean isDeleted) {
         this.id = id;
         this.user = user;
         this.description = description;
@@ -54,6 +59,7 @@ public class Post {
         this.timeOfPublishing = timeOfPublishing;
         this.comments = comments;
         this.userLikes = userLikes;
+        this.isDeleted = isDeleted;
     }
 
     public String getDescription() {
@@ -120,6 +126,19 @@ public class Post {
         this.user = user;
     }
 
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
+    public Integer getLikesCount() {
+        return userLikes.size();
+    }
+
     @Override
     public int hashCode() {
         return 1337;
@@ -134,6 +153,7 @@ public class Post {
                 ", timeOfPublishing=" + timeOfPublishing +
                 ", comments=" + (comments != null ? comments.size() : "null") +
                 ", userLikes=" + (userLikes != null ? userLikes.size() : "null") +
+                ", isDeleted=" + isDeleted +
                 "]";
     }
 

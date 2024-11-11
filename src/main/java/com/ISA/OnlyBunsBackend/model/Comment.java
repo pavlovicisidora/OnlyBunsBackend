@@ -2,6 +2,8 @@ package com.ISA.OnlyBunsBackend.model;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 public class Comment {
     @Id
@@ -19,14 +21,20 @@ public class Comment {
     @Column(name = "text", nullable = false)
     private String text;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
     public Comment() {
     }
 
-    public Comment(int id, User user, Post post, String text) {
+
+    public Comment(int id, User user, Post post, String text, LocalDateTime createdAt) {
+
         this.id = id;
         this.user = user;
         this.post = post;
         this.text = text;
+        this.createdAt = createdAt;
     }
 
     public int getId() {
@@ -61,13 +69,22 @@ public class Comment {
         this.post = post;
     }
 
+
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+
     @Override
     public String toString() {
         return "Comment [id=" + id +
                 ", user=" + (user != null ? user.getUsername() : "null") +
                 ", post=" + (post != null ? post.getId() : "null") +
                 ", text=" + text +
-                "]";
+                ", created_at=" + createdAt + "]";
     }
 
     @Override

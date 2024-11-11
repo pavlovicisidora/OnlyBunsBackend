@@ -2,34 +2,30 @@ package com.ISA.OnlyBunsBackend.dto;
 
 import com.ISA.OnlyBunsBackend.model.Comment;
 
+import java.time.LocalDateTime;
+
 public class CommentDTO {
-    private int id;
-    private UserRegistration user;
+    private Integer id;
     private String text;
+    private String authorName;
+    private LocalDateTime createdAt;
 
     public CommentDTO() {
     }
 
     public CommentDTO(Comment comment) {
-        id = comment.getId();
-        user = new UserRegistration(comment.getUser());
-        text = comment.getText();
+        this.id = comment.getId();
+        this.text = comment.getText();
+        this.authorName = comment.getUser().getFullName();
+        this.createdAt = comment.getCreatedAt();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public UserRegistration getUser() {
-        return user;
-    }
-
-    public void setUser(UserRegistration user) {
-        this.user = user;
     }
 
     public String getText() {
@@ -38,5 +34,19 @@ public class CommentDTO {
 
     public void setText(String text) {
         this.text = text;
+    }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
     }
 }

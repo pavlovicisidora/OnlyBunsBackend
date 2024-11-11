@@ -4,14 +4,12 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
 import java.sql.Timestamp;
 import java.util.*;
 
 @Entity
 @Table(name="users")
 public class User implements UserDetails {
-    private static final long serialVersionUID = 1L;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -53,8 +51,8 @@ public class User implements UserDetails {
     )
     private Set<User> followers = new HashSet<>();
 
-    @OneToMany(mappedBy = "user")
-    private List<Post> posts;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    private Set<Post> posts = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id", referencedColumnName = "id")
@@ -65,7 +63,8 @@ public class User implements UserDetails {
 
 
     public User(){}
-    public User(String username, String password, String firstName, String lastName, String email, Role role, Location location, boolean isActivated, Set<User> followers, Set<User> followings, List<Post> posts, Timestamp lastPasswordResetDate)
+
+    public User(String username, String password, String firstName, String lastName, String email, Role role, Location location, boolean isActivated, Set<User> followers, Set<User> followings, Set<Post> posts, Timestamp lastPasswordResetDate)
     {
         super();
         this.username = username;
@@ -163,11 +162,19 @@ public class User implements UserDetails {
         this.followings = followings;
     }
 
-    public List<Post> getPosts() {
+    public Set<Post> getPosts() {
         return posts;
     }
 
-    public void setPosts(List<Post> posts) {
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public void setPosts(Set<Post> posts) {
         this.posts = posts;
     }
 
@@ -180,12 +187,9 @@ public class User implements UserDetails {
         return Collections.singletonList(role);
     }
 
-    public int getId() {
-        return id;
-    }
+    public String getFullName() {
+        return firstName + " " + lastName;
 
-    public void setId(int id) {
-        this.id = id;
     }
 
     @Override
@@ -241,6 +245,14 @@ public class User implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
+    }
+
+    public int getPostCount() {
+        return posts != null ? posts.size() : 0;
+    }
+
+    public int getFollowersCount() {
+        return followers != null ? followers.size() : 0;
     }
 
 }
