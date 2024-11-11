@@ -11,7 +11,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface UserService {
-    User findById(Long id);
+    User findById(int id);
     User findByUsername(String username);
     List<User> findAll ();
     User save(UserRegistration userRequest);

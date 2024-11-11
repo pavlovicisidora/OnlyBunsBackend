@@ -1,6 +1,5 @@
 package com.ISA.OnlyBunsBackend.dto;
 
-import com.ISA.OnlyBunsBackend.enums.UserType;
 import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.model.User;
 

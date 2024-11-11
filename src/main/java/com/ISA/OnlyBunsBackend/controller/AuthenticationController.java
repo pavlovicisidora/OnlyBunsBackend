@@ -90,7 +90,7 @@ public class AuthenticationController {
 
 
     @PutMapping("/activate/{id}")
-    public ResponseEntity<Void> activateUser(@PathVariable Long id) {
+    public ResponseEntity<Void> activateUser(@PathVariable int id) {
         User user = userService.findById(id);
         if (user == null) {
             return ResponseEntity.notFound().build();

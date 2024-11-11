@@ -64,6 +64,7 @@ public class WebSecurityConfig {
         // Replacing antMatchers with requestMatchers for Spring Security 5.0+
         http.authorizeRequests()
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("api/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")  // Swagger URLs
                 .permitAll()
                 .anyRequest().authenticated()  // For other routes, authentication is required
