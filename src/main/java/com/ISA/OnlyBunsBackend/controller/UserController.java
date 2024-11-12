@@ -43,6 +43,11 @@ public class UserController {
         return this.userService.findByUsername(user.getName());
     }
 
+    @GetMapping("/profile/{id}")
+    public UsersViewDTO getUserInfo(@PathVariable int id) {
+        return this.userService.getUser(id);
+    }
+
 
 
     @GetMapping("/search")

@@ -30,15 +30,21 @@ public class PostServiceImpl implements PostService {
     public List<PostViewDTO> getAllPosts() {
         List<Post> posts = postRepository.findAll();
         List<PostViewDTO> postDTOs = new ArrayList<>();
+
+        /*Iva*/
+        posts.sort((post1, post2) -> post2.getTimeOfPublishing().compareTo(post1.getTimeOfPublishing()));
+
         for (Post post : posts) {
             PostViewDTO postDTO = new PostViewDTO();
             postDTO.setId(post.getId());
+            postDTO.setUserId(post.getUser().getId());
             postDTO.setDescription(post.getDescription());
             postDTO.setImage(post.getImage());
             postDTO.setLikeCount(post.getLikesCount());
             postDTO.setComments(post.getComments().stream()
                     .map(CommentDTO::new)
                     .toList());
+            postDTO.setTimeOfPublishing(post.getTimeOfPublishing());
             postDTO.setDeleted(post.isDeleted());
             if (!postDTO.isDeleted())
                 postDTOs.add(postDTO);
