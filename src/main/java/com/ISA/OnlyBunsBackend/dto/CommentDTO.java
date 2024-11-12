@@ -6,6 +6,7 @@ import java.time.LocalDateTime;
 
 public class CommentDTO {
     private Integer id;
+    private int userId;
     private String text;
     private String authorName;
     private LocalDateTime createdAt;
@@ -15,6 +16,7 @@ public class CommentDTO {
 
     public CommentDTO(Comment comment) {
         this.id = comment.getId();
+        this.userId = comment.getUser().getId();
         this.text = comment.getText();
         this.authorName = comment.getUser().getFullName();
         this.createdAt = comment.getCreatedAt();
@@ -49,4 +51,6 @@ public class CommentDTO {
     public void setCreatedAt(LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }
+    public int getUserId() {return userId;}
+    public void setUserId(int userId) {this.userId = userId;}
 }
