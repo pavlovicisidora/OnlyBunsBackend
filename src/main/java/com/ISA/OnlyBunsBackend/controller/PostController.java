@@ -59,4 +59,9 @@ public class PostController {
         postService.deletePost(postId, userId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/{postId}/isLiked")
+    public boolean isLiked(@PathVariable Integer postId, @RequestParam Integer userId) {
+        return postService.isLiked(postId, userId);
+    }
 }

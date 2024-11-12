@@ -70,6 +70,15 @@ public class PostServiceImpl implements PostService {
         return postRepository.save(post);
     }
 
+    public boolean isLiked(Integer postId, Integer userId) {
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new EntityNotFoundException("User not found"));
+
+        return post.getUserLikes().contains(user);
+    }
+
     public Comment addComment(Integer postId, Integer userId, String text) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
