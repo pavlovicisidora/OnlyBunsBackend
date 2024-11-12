@@ -2,6 +2,7 @@ package com.ISA.OnlyBunsBackend.controller;
 
 
 import com.ISA.OnlyBunsBackend.dto.CommentDTO;
+import com.ISA.OnlyBunsBackend.dto.PostDTO;
 import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
 import com.ISA.OnlyBunsBackend.model.Comment;
 import com.ISA.OnlyBunsBackend.model.Post;
@@ -46,6 +47,11 @@ public class PostController {
             @RequestParam String newImage) {
         Post updatedPost = postService.updatePost(postId, userId, newDescription, newImage);
         return ResponseEntity.ok(updatedPost);
+    }
+    @PostMapping("/create")
+    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO post) {
+        PostDTO newPost = postService.createPost(post);
+        return ResponseEntity.ok(newPost);
     }
 
     @DeleteMapping("/{postId}")
