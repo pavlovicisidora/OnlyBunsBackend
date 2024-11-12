@@ -1,7 +1,9 @@
 package com.ISA.OnlyBunsBackend.service.impl;
 
+import com.ISA.OnlyBunsBackend.dto.PostDTO;
 import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
 import com.ISA.OnlyBunsBackend.dto.CommentDTO;
+import com.ISA.OnlyBunsBackend.mapper.PostDTOMapper;
 import com.ISA.OnlyBunsBackend.model.Comment;
 import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.model.User;
@@ -25,6 +27,7 @@ public class PostServiceImpl implements PostService {
     private UserRepository userRepository;
     @Autowired
     private CommentRepository commentRepository;
+    ;
 
     @Override
     public List<PostViewDTO> getAllPosts() {
@@ -111,6 +114,13 @@ public class PostServiceImpl implements PostService {
 
         post.setDeleted(true);
         postRepository.save(post);
+    }
+
+    @Override
+    public PostDTO createPost(PostDTO postDto) {
+        Post post = PostDTOMapper.fromDTOtoPost(postDto);
+        post = postRepository.save(post);
+        return PostDTOMapper.fromPostToDTO(post);
     }
 
 
