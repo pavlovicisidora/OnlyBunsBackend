@@ -1,5 +1,6 @@
 package com.ISA.OnlyBunsBackend.service;
 
+import com.ISA.OnlyBunsBackend.dto.PostDTO;
 import com.ISA.OnlyBunsBackend.model.Comment;
 import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
 import com.ISA.OnlyBunsBackend.model.Post;
@@ -12,4 +13,5 @@ public interface PostService {
     Comment addComment(Integer postId, Integer userId, String content);
     Post updatePost(Integer postId, Integer userId, String newDescription, String newImage);
     void deletePost(Integer postId, Integer userId);
+    PostDTO createPost(PostDTO post);
 }
