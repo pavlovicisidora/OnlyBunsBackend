@@ -21,4 +21,5 @@ public interface UserService {
     List<UsersViewDTO> getAllUsers();
     List<UsersViewDTO> searchUsers(String firstName, String lastName, String email, String minPosts, String maxPosts, String sortBy, String sortDirection);
 
+    UsersViewDTO getUser(Integer id);
 }

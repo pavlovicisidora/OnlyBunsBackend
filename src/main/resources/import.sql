@@ -10,7 +10,7 @@ insert into users (username, password, first_name, last_name, email, role_id, lo
 insert into users (username, password, first_name, last_name, email, role_id, location_id, is_activated, last_password_reset_date) values ('ivana2014', 'password789', 'Ivana', 'Ivanović', 'ivana@email.com', 2, 1, true, '2024-11-07 11:30:00');
 insert into users (username, password, first_name, last_name, email, role_id, location_id, is_activated, last_password_reset_date) values ('bojan2014', 'password101', 'Bojan', 'Bojanović', 'bojan@email.com', 2, 3, false, '2024-11-07 11:30:00');
 
-insert into post (user_id, description, image, location_id, time_of_publishing, is_deleted) values (1, 'Post description for Marko', 'image1.jpg', 1, '2024-11-07 10:30:00', false);
+insert into post (user_id, description, image, location_id, time_of_publishing, is_deleted) values (1, 'Post description for Marko', 'image1.jpg', 1, '2024-09-07 10:30:00', false);
 insert into post (user_id, description, image, location_id, time_of_publishing, is_deleted) values (2, 'Post description for Milan', 'image2.jpg', 2, '2024-11-07 11:00:00', true);
 insert into post (user_id, description, image, location_id, time_of_publishing, is_deleted) values (3, 'Post description for Ivana', 'image3.jpg', 1, '2024-11-07 11:30:00', false);
 

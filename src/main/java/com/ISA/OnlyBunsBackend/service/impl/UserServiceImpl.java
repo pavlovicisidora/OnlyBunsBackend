@@ -153,4 +153,22 @@ public class UserServiceImpl implements UserService {
         return userDTOs;
     }
 
+    @Override
+    public UsersViewDTO getUser(Integer id) {
+        List<User> users = userRepository.findAll();
+        UsersViewDTO userDTO = new UsersViewDTO();
+
+        for(User user : users) {
+            if(user.getId().equals(id)) {
+                userDTO.setId(user.getId());
+                userDTO.setEmail(user.getEmail());
+                userDTO.setFirstName(user.getFirstName());
+                userDTO.setLastName(user.getLastName());
+                userDTO.setFollowersCount(getFollowersCount(user.getId()));
+                userDTO.setPostCount(user.getPostCount());
+            }
+        }
+        return userDTO;
+    }
+
 }
