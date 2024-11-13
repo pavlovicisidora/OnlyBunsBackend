@@ -69,7 +69,7 @@ public class UserServiceImpl implements UserService {
 		u.setEmail(userRequest.getEmail());
 
 		// u primeru se registruju samo obicni korisnici i u skladu sa tim im se i dodeljuje samo rola USER
-		Role role = roleService.findByName("USER");
+		Role role = roleService.findByName("ROLE_USER");
 		u.setRole(role);
 		
 		return this.userRepository.save(u);
