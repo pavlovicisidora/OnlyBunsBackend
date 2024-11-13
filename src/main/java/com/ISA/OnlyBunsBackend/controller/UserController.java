@@ -32,7 +32,7 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @GetMapping("/all")
-    @PreAuthorize("hasRole('ADMIN')")
+    //@PreAuthorize("hasRole('ADMIN')")
     public List<UsersViewDTO> getAllUsers() {
         return userService.getAllUsers();
     }
