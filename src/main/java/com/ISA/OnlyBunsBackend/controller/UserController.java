@@ -32,13 +32,13 @@ public class UserController {
     private AuthenticationManager authenticationManager;
 
     @GetMapping("/all")
-    //@PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN')")
     public List<UsersViewDTO> getAllUsers() {
         return userService.getAllUsers();
     }
 
     @GetMapping("/userInfo")
-    //@PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public User user(Principal user) {
         return this.userService.findByUsername(user.getName());
     }
