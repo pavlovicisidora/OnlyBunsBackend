@@ -8,6 +8,7 @@ import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
+import org.springframework.scheduling.annotation.Scheduled;
 
 
 import java.util.List;
@@ -21,7 +22,11 @@ public interface UserService {
 
     Integer getFollowersCount(Integer userId);
     Page<UsersViewDTO> getAllUsers(Pageable pageable);
-    List<UsersViewDTO> searchUsers(String firstName, String lastName, String email, String minPosts, String maxPosts, String sortBy, String sortDirection);
+    Page<UsersViewDTO> searchUsers(Pageable pageable, String firstName, String lastName, String email, String minPosts, String maxPosts, String sortBy, String sortDirection);
 
     UsersViewDTO getUser(Integer id);
+    void deleteInactiveUsers();
+
+    @Scheduled(cron = "0 0 0 28-31 * ?")
+    void scheduleInactiveUserDeletion();
 }

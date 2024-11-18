@@ -54,13 +54,15 @@ public class UserController {
 
     @GetMapping("/search")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<UsersViewDTO> searchUsers(@RequestParam(required = false) String firstName,
-                                  @RequestParam(required = false) String lastName,
-                                  @RequestParam(required = false) String email,
-                                  @RequestParam(required = false) String minPosts,
-                                  @RequestParam(required = false) String maxPosts,
-                                  @RequestParam(required = false) String sortBy,
-                                  @RequestParam(required = false) String sortDirection) {
-        return userService.searchUsers(firstName, lastName, email, minPosts, maxPosts, sortBy, sortDirection);
+    public Page<UsersViewDTO> searchUsers(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "5") int size,
+                                          @RequestParam(required = false) String firstName,
+                                          @RequestParam(required = false) String lastName,
+                                          @RequestParam(required = false) String email,
+                                          @RequestParam(required = false) String minPosts,
+                                          @RequestParam(required = false) String maxPosts,
+                                          @RequestParam(required = false) String sortBy,
+                                          @RequestParam(required = false) String sortDirection) {
+        return userService.searchUsers(PageRequest.of(page, size), firstName, lastName, email, minPosts, maxPosts, sortBy, sortDirection);
     }
 }

@@ -61,10 +61,12 @@ public class User implements UserDetails {
     @Column(name = "last_password_reset_date")
     private Timestamp lastPasswordResetDate;
 
+    @Column(name = "isDeleted", nullable = false)
+    private boolean isDeleted = false;
 
     public User(){}
 
-    public User(String username, String password, String firstName, String lastName, String email, Role role, Location location, boolean isActivated, Set<User> followers, Set<User> followings, Set<Post> posts, Timestamp lastPasswordResetDate)
+    public User(String username, String password, String firstName, String lastName, String email, Role role, Location location, boolean isActivated, Set<User> followers, Set<User> followings, Set<Post> posts, Timestamp lastPasswordResetDate, boolean isDeleted)
     {
         super();
         this.username = username;
@@ -79,6 +81,7 @@ public class User implements UserDetails {
         this.followings = followings;
         this.posts = posts;
         this.lastPasswordResetDate = lastPasswordResetDate;
+        this.isDeleted = isDeleted;
     }
 
     public String getUsername() {
@@ -181,9 +184,16 @@ public class User implements UserDetails {
     public Role getRole() { return role; }
     public void setRole(Role role) { this.role = role; }
 
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Assuming `Role` has a method `getAuthority` that returns the role name
         return Collections.singletonList(role);
     }
 
@@ -206,6 +216,7 @@ public class User implements UserDetails {
                 ", followings=" + (followings != null ? followings.size() : "null") +
                 ", posts=" + (posts != null ? posts.size() : "null") +
                 ", lastPasswordResetDate=" + lastPasswordResetDate +
+                ", isDeleted=" + isDeleted +
                 "]";
     }
 
