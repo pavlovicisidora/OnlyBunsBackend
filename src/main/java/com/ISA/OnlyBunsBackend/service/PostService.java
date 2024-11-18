@@ -15,4 +15,5 @@ public interface PostService {
     void deletePost(Integer postId, Integer userId);
     boolean isLiked(Integer postId, Integer userId);
     PostDTO createPost(PostDTO post);
+    PostViewDTO getPostById(int id);
 }

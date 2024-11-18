@@ -5,6 +5,8 @@ import com.ISA.OnlyBunsBackend.dto.UserRegistration;
 import com.ISA.OnlyBunsBackend.model.User;
 
 import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.query.Param;
 
 
@@ -18,7 +20,7 @@ public interface UserService {
     User updateUser(User updatedUser);
 
     Integer getFollowersCount(Integer userId);
-    List<UsersViewDTO> getAllUsers();
+    Page<UsersViewDTO> getAllUsers(Pageable pageable);
     List<UsersViewDTO> searchUsers(String firstName, String lastName, String email, String minPosts, String maxPosts, String sortBy, String sortDirection);
 
     UsersViewDTO getUser(Integer id);

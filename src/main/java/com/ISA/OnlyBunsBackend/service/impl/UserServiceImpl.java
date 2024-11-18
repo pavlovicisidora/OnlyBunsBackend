@@ -11,6 +11,8 @@ import com.ISA.OnlyBunsBackend.service.EmailService;
 import com.ISA.OnlyBunsBackend.service.RoleService;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +21,6 @@ import org.springframework.stereotype.Service;
 import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -87,10 +88,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UsersViewDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UsersViewDTO> userDTOs = new ArrayList<>();
-        for (User user : users) {
+    public Page<UsersViewDTO> getAllUsers(Pageable pageable) {
+        Page<User> usersPage = userRepository.findAll(pageable);
+        return usersPage.map(user -> {
             UsersViewDTO userDTO = new UsersViewDTO();
             userDTO.setId(user.getId());
             userDTO.setEmail(user.getEmail());
@@ -98,9 +98,8 @@ public class UserServiceImpl implements UserService {
             userDTO.setLastName(user.getLastName());
             userDTO.setFollowersCount(getFollowersCount(user.getId()));
             userDTO.setPostCount(user.getPostCount());
-            userDTOs.add(userDTO);
-        }
-        return userDTOs;
+            return userDTO;
+        });
     }
 
     @Override

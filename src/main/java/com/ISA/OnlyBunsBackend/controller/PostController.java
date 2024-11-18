@@ -9,6 +9,7 @@ import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,13 +25,20 @@ public class PostController {
         return postService.getAllPosts();
     }
 
+    @GetMapping("/{id}")
+    public PostViewDTO getPostById(int id) {
+        return postService.getPostById(id);
+    }
+
     @PostMapping("/{postId}/like")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<Post> likePost(@PathVariable Integer postId, @RequestParam Integer userId) {
         Post updatedPost = postService.likePost(postId, userId);
         return ResponseEntity.ok(updatedPost);
     }
 
     @PostMapping("/{postId}/comment")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<CommentDTO> addComment(
             @PathVariable Integer postId,
             @RequestParam Integer userId,
@@ -40,6 +48,7 @@ public class PostController {
     }
 
     @PutMapping("/{postId}")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<Post> updatePost(
             @PathVariable Integer postId,
             @RequestParam Integer userId,
@@ -55,12 +64,14 @@ public class PostController {
     }
 
     @DeleteMapping("/{postId}")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<Void> deletePost(@PathVariable Integer postId, @RequestParam Integer userId) {
         postService.deletePost(postId, userId);
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/{postId}/isLiked")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public boolean isLiked(@PathVariable Integer postId, @RequestParam Integer userId) {
         return postService.isLiked(postId, userId);
     }
