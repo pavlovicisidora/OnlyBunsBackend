@@ -1,5 +1,6 @@
 package com.ISA.OnlyBunsBackend.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import com.ISA.OnlyBunsBackend.dto.UserRegistration;
@@ -11,6 +12,10 @@ import com.ISA.OnlyBunsBackend.service.EmailService;
 import com.ISA.OnlyBunsBackend.service.RoleService;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,7 +24,6 @@ import org.springframework.stereotype.Service;
 import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -87,24 +91,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UsersViewDTO> getAllUsers() {
-        List<User> users = userRepository.findAll();
-        List<UsersViewDTO> userDTOs = new ArrayList<>();
-        for (User user : users) {
-            UsersViewDTO userDTO = new UsersViewDTO();
-            userDTO.setId(user.getId());
-            userDTO.setEmail(user.getEmail());
-            userDTO.setFirstName(user.getFirstName());
-            userDTO.setLastName(user.getLastName());
-            userDTO.setFollowersCount(getFollowersCount(user.getId()));
-            userDTO.setPostCount(user.getPostCount());
-            userDTOs.add(userDTO);
-        }
-        return userDTOs;
+    public Page<UsersViewDTO> getAllUsers(Pageable pageable) {
+        Page<User> usersPage = userRepository.findAll(pageable);
+        return usersPage.getContent().stream()
+                .filter(user -> !user.isDeleted())
+                .map(user -> {
+                    UsersViewDTO userDTO = new UsersViewDTO();
+                    userDTO.setId(user.getId());
+                    userDTO.setEmail(user.getEmail());
+                    userDTO.setFirstName(user.getFirstName());
+                    userDTO.setLastName(user.getLastName());
+                    userDTO.setFollowersCount(getFollowersCount(user.getId()));
+                    userDTO.setPostCount(user.getPostCount());
+                    return userDTO;
+                })
+                .collect(Collectors.collectingAndThen(Collectors.toList(), list ->
+                        new PageImpl<>(list, pageable, usersPage.getTotalElements())
+                ));
     }
 
     @Override
-    public List<UsersViewDTO> searchUsers(String firstName, String lastName, String email, String minPosts, String maxPosts, String sortBy, String sortDirection) {
+    public Page<UsersViewDTO> searchUsers(Pageable pageable, String firstName, String lastName, String email, String minPosts, String maxPosts, String sortBy, String sortDirection) {
         List<User> users = userRepository.findByCriteria(firstName, lastName, email);
         if (minPosts != null || maxPosts != null) {
             int parsedMinPosts = (minPosts != null && !minPosts.isEmpty()) ? Integer.parseInt(minPosts) : 0;
@@ -140,6 +147,8 @@ public class UserServiceImpl implements UserService {
         users.sort(comparator);
 
         for (User user : users) {
+            if(user.isDeleted())
+                continue;
             UsersViewDTO userDTO = new UsersViewDTO();
             userDTO.setId(user.getId());
             userDTO.setEmail(user.getEmail());
@@ -150,7 +159,10 @@ public class UserServiceImpl implements UserService {
             userDTOs.add(userDTO);
         }
 
-        return userDTOs;
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), userDTOs.size());
+        List<UsersViewDTO> pagedContent = userDTOs.subList(start, end);
+        return new PageImpl<>(pagedContent, pageable, userDTOs.size());
     }
 
     @Override
@@ -171,4 +183,20 @@ public class UserServiceImpl implements UserService {
         return userDTO;
     }
 
+    public void deleteInactiveUsers() {
+        LocalDateTime thirtyDaysAgo = LocalDateTime.now().minusDays(30);
+
+        List<User> inactiveUsers = userRepository.findByIsActivatedFalseAndCreatedAtBefore(thirtyDaysAgo);
+
+        for (User user : inactiveUsers) {
+            user.setDeleted(true);
+            userRepository.save(user);
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 28 * ?")
+    //@Scheduled(cron = "0 41 12 18 * ?")
+    public void scheduleInactiveUserDeletion() {
+        deleteInactiveUsers();
+    }
 }

@@ -8,6 +8,8 @@ import java.util.Map;
 import com.ISA.OnlyBunsBackend.model.User;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,8 +35,10 @@ public class UserController {
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
-    public List<UsersViewDTO> getAllUsers() {
-        return userService.getAllUsers();
+    public Page<UsersViewDTO> getAllUsers(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "5") int size) {
+        return userService.getAllUsers(PageRequest.of(page, size));
     }
 
     @GetMapping("/userInfo")
@@ -48,16 +52,17 @@ public class UserController {
         return this.userService.getUser(id);
     }
 
-
-
     @GetMapping("/search")
-    public List<UsersViewDTO> searchUsers(@RequestParam(required = false) String firstName,
-                                  @RequestParam(required = false) String lastName,
-                                  @RequestParam(required = false) String email,
-                                  @RequestParam(required = false) String minPosts,
-                                  @RequestParam(required = false) String maxPosts,
-                                  @RequestParam(required = false) String sortBy,
-                                  @RequestParam(required = false) String sortDirection) {
-        return userService.searchUsers(firstName, lastName, email, minPosts, maxPosts, sortBy, sortDirection);
+    @PreAuthorize("hasRole('ADMIN')")
+    public Page<UsersViewDTO> searchUsers(@RequestParam(defaultValue = "0") int page,
+                                          @RequestParam(defaultValue = "5") int size,
+                                          @RequestParam(required = false) String firstName,
+                                          @RequestParam(required = false) String lastName,
+                                          @RequestParam(required = false) String email,
+                                          @RequestParam(required = false) String minPosts,
+                                          @RequestParam(required = false) String maxPosts,
+                                          @RequestParam(required = false) String sortBy,
+                                          @RequestParam(required = false) String sortDirection) {
+        return userService.searchUsers(PageRequest.of(page, size), firstName, lastName, email, minPosts, maxPosts, sortBy, sortDirection);
     }
 }

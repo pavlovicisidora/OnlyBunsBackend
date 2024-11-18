@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -130,6 +131,23 @@ public class PostServiceImpl implements PostService {
         Post post = PostDTOMapper.fromDTOtoPost(postDto);
         post = postRepository.save(post);
         return PostDTOMapper.fromPostToDTO(post);
+    }
+
+    @Override
+    public PostViewDTO getPostById(int id) {
+        Post post = postRepository.findById(id).orElseGet(null);
+        PostViewDTO postDTO = new PostViewDTO();
+        postDTO.setId(post.getId());
+        postDTO.setUserId(post.getUser().getId());
+        postDTO.setDescription(post.getDescription());
+        postDTO.setImage(post.getImage());
+        postDTO.setLikeCount(post.getLikesCount());
+        postDTO.setComments(post.getComments().stream()
+                .map(CommentDTO::new)
+                .toList());
+        postDTO.setTimeOfPublishing(post.getTimeOfPublishing());
+        postDTO.setDeleted(post.isDeleted());
+        return postDTO;
     }
 
 
