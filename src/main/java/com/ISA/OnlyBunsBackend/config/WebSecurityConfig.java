@@ -81,7 +81,7 @@ public class WebSecurityConfig {
     public WebSecurityCustomizer webSecurityCustomizer() {
         // Ignorišemo autentifikaciju za određene rute
         return (web) -> web.ignoring()
-                .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/signup")
+                .requestMatchers(HttpMethod.POST, "/auth/login", "/auth/signup", "api/**")
                 .requestMatchers(HttpMethod.GET, "/", "location/all", "user/userInfo")
                 .requestMatchers(HttpMethod.PUT, "/auth/activate/*");
 
