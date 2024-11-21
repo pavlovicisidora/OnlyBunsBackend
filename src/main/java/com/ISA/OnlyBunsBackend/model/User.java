@@ -43,6 +43,7 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "followed_user_id")
     )
     private Set<User> followings = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_relations",

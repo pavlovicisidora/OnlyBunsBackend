@@ -18,7 +18,7 @@ insert into comment (user_id, post_id, text) values (1, 1, 'Great post, Marko!')
 insert into comment (user_id, post_id, text) values (2, 2, 'Nice work, Milan.');
 insert into comment (user_id, post_id, text) values (3, 3, 'Interesting read, Ivana.');
 
-insert into user_relations (followed_user_id, follower_id) values (1, 2);
-insert into user_relations (followed_user_id, follower_id) values (2, 3);
-insert into post_user_likes (user_id, post_id) values (1, 2);
-insert into post_user_likes (user_id, post_id) values (2, 3);
+insert into user_relations (followed_user_id, follower_id) values (1, 3);
+
+insert into post_user_likes (user_id, post_id) values (1, 3);
+insert into post_user_likes (user_id, post_id) values (3, 1);

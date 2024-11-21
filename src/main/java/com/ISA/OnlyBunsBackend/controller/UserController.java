@@ -1,9 +1,6 @@
 package com.ISA.OnlyBunsBackend.controller;
 
 import java.security.Principal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 import com.ISA.OnlyBunsBackend.model.User;
 import com.ISA.OnlyBunsBackend.service.UserService;
@@ -11,16 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
-import org.springframework.web.bind.annotation.RequestParam;
 
 // Primer kontrolera cijim metodama mogu pristupiti samo autorizovani korisnici
 @RestController
@@ -64,5 +56,29 @@ public class UserController {
                                           @RequestParam(required = false) String sortBy,
                                           @RequestParam(required = false) String sortDirection) {
         return userService.searchUsers(PageRequest.of(page, size), firstName, lastName, email, minPosts, maxPosts, sortBy, sortDirection);
+    }
+
+    @PutMapping("/follow/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> followUser(@PathVariable Integer id, Principal user) {
+        User loggedInUser = this.userService.findByUsername(user.getName());
+        userService.followUser(loggedInUser.getId(), id);
+        return ResponseEntity.ok("User followed successfully");
+    }
+
+    @DeleteMapping ("/unfollow/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<String> unfollowUser(@PathVariable Integer id, Principal user) {
+        User loggedInUser = this.userService.findByUsername(user.getName());
+        userService.unfollowUser(loggedInUser.getId(), id);
+        return ResponseEntity.ok("User unfollowed successfully");
+    }
+
+    @GetMapping("/isFollowing/{id}")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Boolean> isFollowing(@PathVariable Integer id, Principal user) {
+        User loggedInUser = this.userService.findByUsername(user.getName());
+        boolean isFollowing = userService.isFollowing(loggedInUser.getId(), id);
+        return ResponseEntity.ok(isFollowing);
     }
 }
