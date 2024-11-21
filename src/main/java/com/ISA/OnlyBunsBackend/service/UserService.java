@@ -29,4 +29,9 @@ public interface UserService {
 
     @Scheduled(cron = "0 0 0 28-31 * ?")
     void scheduleInactiveUserDeletion();
+
+    void followUser(Integer followerId, Integer followedId);
+    void unfollowUser(Integer followerId, Integer followedId);
+    boolean isFollowing(int followerId, int followedUserId);
+    List<UsersViewDTO> getFollowingUsers(Integer userId);
 }

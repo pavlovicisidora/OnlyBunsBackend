@@ -28,4 +28,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE u.isActivated = false AND u.lastPasswordResetDate < :createdAt")
     List<User> findByIsActivatedFalseAndCreatedAtBefore(@Param("createdAt") LocalDateTime createdAt);
+    @Query("SELECT u FROM User u JOIN u.followers f WHERE f.id = :userId")
+    List<User> findFollowingUsers(@Param("userId") Integer userId);
 }

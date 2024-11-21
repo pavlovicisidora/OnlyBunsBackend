@@ -1,5 +1,6 @@
 package com.ISA.OnlyBunsBackend.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -43,6 +44,7 @@ public class User implements UserDetails {
             inverseJoinColumns = @JoinColumn(name = "followed_user_id")
     )
     private Set<User> followings = new HashSet<>();
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             name = "user_relations",
@@ -52,6 +54,7 @@ public class User implements UserDetails {
     private Set<User> followers = new HashSet<>();
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
+    @JsonBackReference
     private Set<Post> posts = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.EAGER)

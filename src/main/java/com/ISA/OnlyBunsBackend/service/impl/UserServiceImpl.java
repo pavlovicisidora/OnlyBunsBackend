@@ -5,12 +5,14 @@ import java.util.List;
 
 import com.ISA.OnlyBunsBackend.dto.UserRegistration;
 import com.ISA.OnlyBunsBackend.model.Location;
+import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.model.Role;
 import com.ISA.OnlyBunsBackend.model.User;
 import com.ISA.OnlyBunsBackend.repository.UserRepository;
 import com.ISA.OnlyBunsBackend.service.EmailService;
 import com.ISA.OnlyBunsBackend.service.RoleService;
 import com.ISA.OnlyBunsBackend.service.UserService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
@@ -176,7 +178,7 @@ public class UserServiceImpl implements UserService {
                 userDTO.setEmail(user.getEmail());
                 userDTO.setFirstName(user.getFirstName());
                 userDTO.setLastName(user.getLastName());
-                userDTO.setFollowersCount(getFollowersCount(user.getId()));
+                userDTO.setFollowersCount(user.getFollowersCount());
                 userDTO.setPostCount(user.getPostCount());
             }
         }
@@ -199,4 +201,64 @@ public class UserServiceImpl implements UserService {
     public void scheduleInactiveUserDeletion() {
         deleteInactiveUsers();
     }
+
+    @Override
+    public void followUser(Integer followerId, Integer followedId) {
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new EntityNotFoundException("User to follow not found"));
+
+        if (follower.getFollowings().contains(followed)) {
+            throw new IllegalStateException("Already following this user");
+        }
+
+        follower.getFollowings().add(followed);
+        //followed.getFollowers().add(follower);
+
+        userRepository.save(follower);
+        //userRepository.save(followed);
+    }
+
+    @Override
+    public void unfollowUser(Integer followerId, Integer followedId) {
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
+        User followed = userRepository.findById(followedId)
+                .orElseThrow(() -> new EntityNotFoundException("User to unfollow not found"));
+
+        follower.getFollowings().remove(followed);
+        //followed.getFollowers().remove(follower);
+
+        userRepository.save(follower);
+        //userRepository.save(followed);
+    }
+
+    @Override
+    public boolean isFollowing(int followerId, int followedUserId) {
+        User follower = userRepository.findById(followerId)
+                .orElseThrow(() -> new EntityNotFoundException("Logged in user not found"));
+        User followed = userRepository.findById(followedUserId)
+                .orElseThrow(() -> new EntityNotFoundException("User to follow/unfollow not found"));
+
+        return follower.getFollowings().contains(followed);
+    }
+
+    @Override
+    public List<UsersViewDTO> getFollowingUsers(Integer userId) {
+        List<User> followings = userRepository.findFollowingUsers(userId);
+        return followings.stream()
+                .filter(user -> !user.isDeleted())
+                .map(user -> {
+                    UsersViewDTO userDTO = new UsersViewDTO();
+                    userDTO.setId(user.getId());
+                    userDTO.setEmail(user.getEmail());
+                    userDTO.setFirstName(user.getFirstName());
+                    userDTO.setLastName(user.getLastName());
+                    userDTO.setFollowersCount(getFollowersCount(user.getId()));
+                    userDTO.setPostCount(user.getPostCount());
+                    return userDTO;
+                }).toList();
+    }
 }
+
