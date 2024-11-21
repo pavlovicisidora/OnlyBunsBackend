@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -19,9 +20,10 @@ public class ImageController {
 
 
     @PostMapping
-    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile pictureURL) {
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<String> uploadImage(@RequestParam("file") MultipartFile file) {
         try {
-            String imagePath = imageService.saveImageToStorage("/src/main/resources/static/post.images/", pictureURL);
+            String imagePath = imageService.saveImageToStorage("src/main/resources/static/post.images/", file);
             return ResponseEntity.ok(imagePath); // Vraća putanju slike
         } catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload image.");
@@ -32,7 +34,7 @@ public class ImageController {
     @GetMapping
     public ResponseEntity<byte[]> getImage(@RequestParam("filePath") String pictureURL) {
         try {
-            byte[] imageBytes = imageService.getImage("static/post.images/", pictureURL);
+            byte[] imageBytes = imageService.getImage("src/main/resources/static/post.images/", pictureURL);
             if (imageBytes != null) {
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("Content-Type", "image/jpeg"); // Postavi odgovarajući tip

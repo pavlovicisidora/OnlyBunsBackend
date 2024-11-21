@@ -58,6 +58,7 @@ public class PostController {
         return ResponseEntity.ok(updatedPost);
     }
     @PostMapping("/create")
+    @PreAuthorize("hasAnyRole('USER')")
     public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO post) {
         PostDTO newPost = postService.createPost(post);
         return ResponseEntity.ok(newPost);
