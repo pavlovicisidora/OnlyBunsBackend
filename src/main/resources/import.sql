@@ -19,6 +19,7 @@ insert into comment (user_id, post_id, text) values (2, 2, 'Nice work, Milan.');
 insert into comment (user_id, post_id, text) values (3, 3, 'Interesting read, Ivana.');
 
 insert into user_relations (followed_user_id, follower_id) values (1, 3);
+insert into user_relations (followed_user_id, follower_id) values (3, 1);
 
 insert into post_user_likes (user_id, post_id) values (1, 3);
 insert into post_user_likes (user_id, post_id) values (3, 1);

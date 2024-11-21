@@ -19,6 +19,8 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -155,5 +157,29 @@ public class PostServiceImpl implements PostService {
         return postDTO;
     }
 
+    @Override
+    public List<PostViewDTO> getPostsByFollowedUsers(Integer userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new RuntimeException("User not found"));
 
+        Set<User> followedUsers = user.getFollowings();
+        List<Post> posts = postRepository.findAll().stream()
+                .filter(post -> followedUsers.contains(post.getUser()) && !post.isDeleted())
+                .collect(Collectors.toList());
+        List<PostViewDTO> postDTOs = new ArrayList<>();
+
+        for (Post post : posts) {
+            PostViewDTO postDTO = new PostViewDTO();
+            postDTO.setId(post.getId());
+            postDTO.setUserId(post.getUser().getId());
+            postDTO.setDescription(post.getDescription());
+            postDTO.setImage(post.getImage());
+            postDTO.setLikeCount(post.getLikesCount());
+            postDTO.setComments(post.getComments().stream()
+                    .map(CommentDTO::new)
+                    .toList());
+            postDTO.setTimeOfPublishing(post.getTimeOfPublishing());
+            postDTOs.add(postDTO);
+        }
+        return postDTOs;
+    }
 }

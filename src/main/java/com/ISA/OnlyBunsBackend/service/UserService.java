@@ -33,4 +33,5 @@ public interface UserService {
     void followUser(Integer followerId, Integer followedId);
     void unfollowUser(Integer followerId, Integer followedId);
     boolean isFollowing(int followerId, int followedUserId);
+    List<UsersViewDTO> getFollowingUsers(Integer userId);
 }

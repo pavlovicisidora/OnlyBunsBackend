@@ -202,6 +202,7 @@ public class UserServiceImpl implements UserService {
         deleteInactiveUsers();
     }
 
+    @Override
     public void followUser(Integer followerId, Integer followedId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
@@ -219,6 +220,7 @@ public class UserServiceImpl implements UserService {
         //userRepository.save(followed);
     }
 
+    @Override
     public void unfollowUser(Integer followerId, Integer followedId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
@@ -232,6 +234,7 @@ public class UserServiceImpl implements UserService {
         //userRepository.save(followed);
     }
 
+    @Override
     public boolean isFollowing(int followerId, int followedUserId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Logged in user not found"));
@@ -239,6 +242,23 @@ public class UserServiceImpl implements UserService {
                 .orElseThrow(() -> new EntityNotFoundException("User to follow/unfollow not found"));
 
         return follower.getFollowings().contains(followed);
+    }
+
+    @Override
+    public List<UsersViewDTO> getFollowingUsers(Integer userId) {
+        List<User> followings = userRepository.findFollowingUsers(userId);
+        return followings.stream()
+                .filter(user -> !user.isDeleted())
+                .map(user -> {
+                    UsersViewDTO userDTO = new UsersViewDTO();
+                    userDTO.setId(user.getId());
+                    userDTO.setEmail(user.getEmail());
+                    userDTO.setFirstName(user.getFirstName());
+                    userDTO.setLastName(user.getLastName());
+                    userDTO.setFollowersCount(getFollowersCount(user.getId()));
+                    userDTO.setPostCount(user.getPostCount());
+                    return userDTO;
+                }).toList();
     }
 }
 

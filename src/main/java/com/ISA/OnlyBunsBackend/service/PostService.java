@@ -16,4 +16,5 @@ public interface PostService {
     boolean isLiked(Integer postId, Integer userId);
     PostDTO createPost(PostDTO post);
     PostViewDTO getPostById(int id);
+    List<PostViewDTO> getPostsByFollowedUsers(Integer userId);
 }

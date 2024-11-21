@@ -1,8 +1,11 @@
 package com.ISA.OnlyBunsBackend.controller;
 
 import java.security.Principal;
+import java.util.List;
+import java.util.Optional;
 
 import com.ISA.OnlyBunsBackend.model.User;
+import com.ISA.OnlyBunsBackend.repository.UserRepository;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -24,6 +27,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private AuthenticationManager authenticationManager;
+    @Autowired
+    private UserRepository userRepository;
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")
@@ -80,5 +85,10 @@ public class UserController {
         User loggedInUser = this.userService.findByUsername(user.getName());
         boolean isFollowing = userService.isFollowing(loggedInUser.getId(), id);
         return ResponseEntity.ok(isFollowing);
+    }
+
+    @GetMapping("/following/{userId}")
+    public List<UsersViewDTO> getFollowing(@PathVariable Integer userId) {
+        return userService.getFollowingUsers(userId);
     }
 }
