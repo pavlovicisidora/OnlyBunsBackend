@@ -27,7 +27,7 @@ public interface UserService {
     UsersViewDTO getUser(Integer id);
     void deleteInactiveUsers();
 
-    @Scheduled(cron = "0 0 0 28-31 * ?")
+    @Scheduled(cron = "0 0 0 28 * ?")
     void scheduleInactiveUserDeletion();
 
     void followUser(Integer followerId, Integer followedId);
