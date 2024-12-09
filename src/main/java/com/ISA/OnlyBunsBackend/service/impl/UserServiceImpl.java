@@ -24,6 +24,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
@@ -219,8 +221,9 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
     @Override
-    public void followUser(Integer followerId, Integer followedId) {
+    public UsersViewDTO followUser(Integer followerId, Integer followedId) {
         if (!canFollow(followerId)) {
             throw new IllegalStateException("Reached follow limit. Please try again later.");
         }
@@ -235,13 +238,14 @@ public class UserServiceImpl implements UserService {
 
         follower.getFollowings().add(followed);
         //followed.getFollowers().add(follower);
-
+        followed.setFollowersNum(followed.getFollowersNum() + 1);
         userRepository.save(follower);
-        //userRepository.save(followed);
+        userRepository.save(followed);
+        return new UsersViewDTO(followed);
     }
 
     @Override
-    public void unfollowUser(Integer followerId, Integer followedId) {
+    public UsersViewDTO unfollowUser(Integer followerId, Integer followedId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
         User followed = userRepository.findById(followedId)
@@ -250,8 +254,10 @@ public class UserServiceImpl implements UserService {
         follower.getFollowings().remove(followed);
         //followed.getFollowers().remove(follower);
 
+        followed.setFollowersNum(followed.getFollowersNum() - 1);
         userRepository.save(follower);
-        //userRepository.save(followed);
+        userRepository.save(followed);
+        return new UsersViewDTO(followed);
     }
 
     @Override

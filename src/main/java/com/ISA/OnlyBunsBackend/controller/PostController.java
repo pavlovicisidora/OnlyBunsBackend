@@ -42,8 +42,8 @@ public class PostController {
 
     @PostMapping("/{postId}/like")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Post> likePost(@PathVariable Integer postId, @RequestParam Integer userId) {
-        Post updatedPost = postService.likePost(postId, userId);
+    public ResponseEntity<PostViewDTO> likePost(@PathVariable Integer postId, @RequestParam Integer userId) {
+        PostViewDTO updatedPost = postService.likePost(postId, userId);
         return ResponseEntity.ok(updatedPost);
     }
 
@@ -59,12 +59,12 @@ public class PostController {
 
     @PutMapping("/{postId}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<Post> updatePost(
+    public ResponseEntity<PostViewDTO> updatePost(
             @PathVariable Integer postId,
             @RequestParam Integer userId,
             @RequestParam String newDescription,
             @RequestParam String newImage) {
-        Post updatedPost = postService.updatePost(postId, userId, newDescription, newImage);
+        PostViewDTO updatedPost = postService.updatePost(postId, userId, newDescription, newImage);
         return ResponseEntity.ok(updatedPost);
     }
     @PostMapping("/create")

@@ -9,9 +9,9 @@ import java.util.List;
 
 public interface PostService {
     List<PostViewDTO> getAllPosts();
-    Post likePost(Integer postId, Integer userId);
+    PostViewDTO likePost(Integer postId, Integer userId);
     Comment addComment(Integer postId, Integer userId, String content);
-    Post updatePost(Integer postId, Integer userId, String newDescription, String newImage);
+    PostViewDTO updatePost(Integer postId, Integer userId, String newDescription, String newImage);
     void deletePost(Integer postId, Integer userId);
     boolean isLiked(Integer postId, Integer userId);
     PostDTO createPost(PostDTO post);

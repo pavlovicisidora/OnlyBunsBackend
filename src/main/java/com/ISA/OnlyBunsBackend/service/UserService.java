@@ -30,8 +30,8 @@ public interface UserService {
     @Scheduled(cron = "0 0 0 28 * ?")
     void scheduleInactiveUserDeletion();
 
-    void followUser(Integer followerId, Integer followedId);
-    void unfollowUser(Integer followerId, Integer followedId);
+    UsersViewDTO followUser(Integer followerId, Integer followedId);
+    UsersViewDTO unfollowUser(Integer followerId, Integer followedId);
     boolean isFollowing(int followerId, int followedUserId);
     List<UsersViewDTO> getFollowingUsers(Integer userId);
 }

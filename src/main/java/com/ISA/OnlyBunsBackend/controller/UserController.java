@@ -17,7 +17,6 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.web.bind.annotation.*;
 import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
 
-// Primer kontrolera cijim metodama mogu pristupiti samo autorizovani korisnici
 @RestController
 @RequestMapping(value = "api/users", produces = MediaType.APPLICATION_JSON_VALUE)
 @CrossOrigin
@@ -65,18 +64,16 @@ public class UserController {
 
     @PutMapping("/follow/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> followUser(@PathVariable Integer id, Principal user) {
+    public ResponseEntity<UsersViewDTO> followUser(@PathVariable Integer id, Principal user) {
         User loggedInUser = this.userService.findByUsername(user.getName());
-        userService.followUser(loggedInUser.getId(), id);
-        return ResponseEntity.ok("User followed successfully");
+        return ResponseEntity.ok(userService.followUser(loggedInUser.getId(), id));
     }
 
     @DeleteMapping ("/unfollow/{id}")
     @PreAuthorize("hasRole('USER')")
-    public ResponseEntity<String> unfollowUser(@PathVariable Integer id, Principal user) {
+    public ResponseEntity<UsersViewDTO> unfollowUser(@PathVariable Integer id, Principal user) {
         User loggedInUser = this.userService.findByUsername(user.getName());
-        userService.unfollowUser(loggedInUser.getId(), id);
-        return ResponseEntity.ok("User unfollowed successfully");
+        return ResponseEntity.ok(userService.unfollowUser(loggedInUser.getId(), id));
     }
 
     @GetMapping("/isFollowing/{id}")

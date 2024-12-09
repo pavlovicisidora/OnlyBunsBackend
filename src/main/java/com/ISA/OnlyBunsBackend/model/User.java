@@ -67,9 +67,11 @@ public class User implements UserDetails {
     @Column(name = "isDeleted", nullable = false)
     private boolean isDeleted = false;
 
+    @Column(name = "followersNum", nullable = false)
+    private int followersNum = 0;
     public User(){}
 
-    public User(String username, String password, String firstName, String lastName, String email, Role role, Location location, boolean isActivated, Set<User> followers, Set<User> followings, Set<Post> posts, Timestamp lastPasswordResetDate, boolean isDeleted)
+    public User(String username, String password, String firstName, String lastName, String email, Role role, Location location, boolean isActivated, Set<User> followers, Set<User> followings, Set<Post> posts, Timestamp lastPasswordResetDate, boolean isDeleted, int followersNum)
     {
         super();
         this.username = username;
@@ -85,6 +87,7 @@ public class User implements UserDetails {
         this.posts = posts;
         this.lastPasswordResetDate = lastPasswordResetDate;
         this.isDeleted = isDeleted;
+        this.followersNum = followersNum;
     }
 
     public String getUsername() {
@@ -195,6 +198,14 @@ public class User implements UserDetails {
         isDeleted = deleted;
     }
 
+    public int getFollowersNum() {
+        return followersNum;
+    }
+
+    public void setFollowersNum(int followersNum) {
+        this.followersNum = followersNum;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return Collections.singletonList(role);
@@ -220,6 +231,7 @@ public class User implements UserDetails {
                 ", posts=" + (posts != null ? posts.size() : "null") +
                 ", lastPasswordResetDate=" + lastPasswordResetDate +
                 ", isDeleted=" + isDeleted +
+                ", followersNum=" + followersNum +
                 "]";
     }
 
