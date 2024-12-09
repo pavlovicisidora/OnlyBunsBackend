@@ -1,7 +1,7 @@
 package com.ISA.OnlyBunsBackend.service.impl;
 
 import java.time.LocalDateTime;
-import java.util.List;
+import java.util.*;
 
 import com.ISA.OnlyBunsBackend.dto.UserRegistration;
 import com.ISA.OnlyBunsBackend.model.Location;
@@ -24,9 +24,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Comparator;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,16 +36,18 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	private UserRepository userRepository;
-
 	@Autowired
 	private PasswordEncoder passwordEncoder;
-
 	@Autowired
 	private RoleService roleService;
     @Autowired
-    private EmailService emailService;
-    @Autowired
     private LocationServiceImpl locationServiceImpl;
+
+    // Mapa koja čuva listu vremenskih oznaka praćenja po korisničkom ID-ju
+    private final Map<Integer, Queue<LocalDateTime>> followAttempts = new ConcurrentHashMap<>();
+
+    private static final int FOLLOW_LIMIT = 50;
+    private static final int TIME_WINDOW_MINUTES = 1;
 
 	@Override
 	public User findByUsername(String username) throws UsernameNotFoundException {
@@ -202,8 +206,27 @@ public class UserServiceImpl implements UserService {
         deleteInactiveUsers();
     }
 
+    private boolean canFollow(Integer userId) {
+        Queue<LocalDateTime> attempts = followAttempts.computeIfAbsent(userId, k -> new ConcurrentLinkedQueue<>());
+        LocalDateTime now = LocalDateTime.now();
+
+        // uklanjam stare pokusaje - pre vise od minut
+        while (!attempts.isEmpty() && attempts.peek().isBefore(now.minusMinutes(TIME_WINDOW_MINUTES))) {
+            attempts.poll();
+        }
+
+        if (attempts.size() < FOLLOW_LIMIT) {
+            attempts.add(now);
+            return true;
+        }
+        return false;
+    }
+
     @Override
-    public void followUser(Integer followerId, Integer followedId) {
+    public UsersViewDTO followUser(Integer followerId, Integer followedId) {
+        if (!canFollow(followerId)) {
+            throw new IllegalStateException("Reached follow limit. Please try again later.");
+        }
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
         User followed = userRepository.findById(followedId)
@@ -215,13 +238,14 @@ public class UserServiceImpl implements UserService {
 
         follower.getFollowings().add(followed);
         //followed.getFollowers().add(follower);
-
+        followed.setFollowersNum(followed.getFollowersNum() + 1);
         userRepository.save(follower);
-        //userRepository.save(followed);
+        userRepository.save(followed);
+        return new UsersViewDTO(followed);
     }
 
     @Override
-    public void unfollowUser(Integer followerId, Integer followedId) {
+    public UsersViewDTO unfollowUser(Integer followerId, Integer followedId) {
         User follower = userRepository.findById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
         User followed = userRepository.findById(followedId)
@@ -230,8 +254,10 @@ public class UserServiceImpl implements UserService {
         follower.getFollowings().remove(followed);
         //followed.getFollowers().remove(follower);
 
+        followed.setFollowersNum(followed.getFollowersNum() - 1);
         userRepository.save(follower);
-        //userRepository.save(followed);
+        userRepository.save(followed);
+        return new UsersViewDTO(followed);
     }
 
     @Override

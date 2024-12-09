@@ -59,7 +59,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post likePost(Integer postId, Integer userId) {
+    public PostViewDTO likePost(Integer postId, Integer userId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
         User user = userRepository.findById(userId)
@@ -71,7 +71,8 @@ public class PostServiceImpl implements PostService {
             post.getUserLikes().add(user);
         }
 
-        return postRepository.save(post);
+        Post likedPost = postRepository.save(post);
+        return new PostViewDTO(likedPost);
     }
 
     @Override
@@ -106,7 +107,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    public Post updatePost(Integer postId, Integer userId, String newDescription, String newImage) {
+    public PostViewDTO updatePost(Integer postId, Integer userId, String newDescription, String newImage) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new EntityNotFoundException("Post not found"));
 
@@ -117,7 +118,7 @@ public class PostServiceImpl implements PostService {
         post.setDescription(newDescription);
         post.setImage(newImage);
 
-        return postRepository.save(post);
+        return new PostViewDTO(postRepository.save(post));
     }
 
     @Override
