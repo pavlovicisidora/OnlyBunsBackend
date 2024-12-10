@@ -221,15 +221,20 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+    @Transactional(readOnly = false)
+    public UsersViewDTO findOneById(Integer id) {
+        return new UsersViewDTO(userRepository.findOneById(id).get());
+    }
 
     @Override
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public UsersViewDTO followUser(Integer followerId, Integer followedId) {
         if (!canFollow(followerId)) {
             throw new IllegalStateException("Reached follow limit. Please try again later.");
         }
-        User follower = userRepository.findById(followerId)
+        User follower = userRepository.findOneById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
-        User followed = userRepository.findById(followedId)
+        User followed = userRepository.findOneById(followedId)
                 .orElseThrow(() -> new EntityNotFoundException("User to follow not found"));
 
         if (follower.getFollowings().contains(followed)) {
