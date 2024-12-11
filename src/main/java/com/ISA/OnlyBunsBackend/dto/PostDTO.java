@@ -2,47 +2,47 @@ package com.ISA.OnlyBunsBackend.dto;
 
 import com.ISA.OnlyBunsBackend.model.Comment;
 import com.ISA.OnlyBunsBackend.model.Location;
-import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.model.User;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class PostDTO {
-    private int id;
+    private Integer id;
+    private User user;
     private String description;
     private String image;
-    private LocationDTO location;
+    private Location location;
     private LocalDateTime timeOfPublishing;
-    private List<CommentDTO> comments;
-    private List<UserDTO> userLikes;
+    private boolean isDeleted = false;
 
-    public PostDTO() {
-    }
-    public PostDTO(Post post) {
-        this.id = post.getId();
-        this.description = post.getDescription();
-        this.image = post.getImage();
-        this.location = new LocationDTO(post.getLocation());
-        this.timeOfPublishing = post.getTimeOfPublishing();
-        this.comments = new ArrayList<>();
-        for (Comment comment : post.getComments()) {
-            this.comments.add(new CommentDTO(comment));
-        }
+    public PostDTO() {}
 
-        this.userLikes = new ArrayList<>();
-        for (User user : post.getUserLikes()) {
-            this.userLikes.add(new UserDTO(user));
-        }
+    public PostDTO(LocalDateTime timeOfPublishing, Location location, String image, String description, User user, Integer id){
+        this.timeOfPublishing = timeOfPublishing;
+        this.location = location;
+        this.image = image;
+        this.description = description;
+        this.user = user;
+        this.id = id;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getDescription() {
@@ -61,11 +61,11 @@ public class PostDTO {
         this.image = image;
     }
 
-    public LocationDTO getLocation() {
+    public Location getLocation() {
         return location;
     }
 
-    public void setLocation(LocationDTO location) {
+    public void setLocation(Location location) {
         this.location = location;
     }
 
@@ -76,20 +76,11 @@ public class PostDTO {
     public void setTimeOfPublishing(LocalDateTime timeOfPublishing) {
         this.timeOfPublishing = timeOfPublishing;
     }
-
-    public List<CommentDTO> getComments() {
-        return comments;
+    public boolean isDeleted() {
+        return isDeleted;
     }
 
-    public void setComments(List<CommentDTO> comments) {
-        this.comments = comments;
-    }
-
-    public List<UserDTO> getUserLikes() {
-        return userLikes;
-    }
-
-    public void setUserLikes(List<UserDTO> userLikes) {
-        this.userLikes = userLikes;
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 }

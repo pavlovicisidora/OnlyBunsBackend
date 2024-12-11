@@ -1,8 +1,11 @@
 package com.ISA.OnlyBunsBackend.mapper;
 
-import org.modelmapper.ModelMapper;
+
 import com.ISA.OnlyBunsBackend.dto.PostDTO;
+import com.ISA.OnlyBunsBackend.dto.UserRegistration;
 import com.ISA.OnlyBunsBackend.model.Post;
+import com.ISA.OnlyBunsBackend.model.User;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,3 +26,4 @@ public class PostDTOMapper {
         return modelMapper.map(post, PostDTO.class);
     }
 }
+

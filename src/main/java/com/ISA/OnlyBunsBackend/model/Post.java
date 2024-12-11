@@ -1,15 +1,25 @@
 package com.ISA.OnlyBunsBackend.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
+@Table(name = "post")
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonManagedReference
+    private User user;
 
     @Column(name = "description", nullable = false)
     private String description;
@@ -17,32 +27,40 @@ public class Post {
     @Column(name = "image", nullable = false)
     private String image;
 
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "location")
+
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id")
     private Location location;
 
     @Column(name = "timeOfPublishing", nullable = false)
     private LocalDateTime timeOfPublishing;
 
-    @OneToMany(mappedBy = "comments", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Comment> comments;
 
-    @OneToMany(mappedBy = "userLikes", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<User> userLikes;
+    @OneToMany(mappedBy = "post", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    private Set<Comment> comments = new HashSet<>();
 
-    @Column(name = "deleted",nullable = false)
-    private boolean deleted;
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "post_user_likes",
+            joinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id")
+    )
+    private Set<User> userLikes = new HashSet<>();
+
+    @Column(name = "isDeleted", nullable = false)
+    private boolean isDeleted = false;
 
     public Post() {}
-    public Post(Integer id, String description, String image, Location location, LocalDateTime timeOfPublishing, List<Comment> comments, List<User> userLikes,boolean deleted) {
+    public Post(Integer id, User user, String description, String image, Location location, LocalDateTime timeOfPublishing, Set<Comment> comments, Set<User> userLikes, boolean isDeleted) {
         this.id = id;
+        this.user = user;
         this.description = description;
         this.image = image;
         this.location = location;
         this.timeOfPublishing = timeOfPublishing;
         this.comments = comments;
         this.userLikes = userLikes;
-        this.deleted = deleted;
+        this.isDeleted = isDeleted;
     }
 
     public String getDescription() {
@@ -85,28 +103,41 @@ public class Post {
         this.timeOfPublishing = timeOfPublishing;
     }
 
-    public List<User> getUserLikes() {
+    public Set<User> getUserLikes() {
         return userLikes;
     }
 
-    public void setUserLikes(List<User> userLikes) {
+    public void setUserLikes(Set<User> userLikes) {
         this.userLikes = userLikes;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
+
     public boolean isDeleted() {
-        return deleted;
+        return isDeleted;
     }
 
     public void setDeleted(boolean deleted) {
-        this.deleted = deleted;
+        isDeleted = deleted;
+    }
+
+    public Integer getLikesCount() {
+        return userLikes.size();
     }
 
     @Override
@@ -123,7 +154,7 @@ public class Post {
                 ", timeOfPublishing=" + timeOfPublishing +
                 ", comments=" + (comments != null ? comments.size() : "null") +
                 ", userLikes=" + (userLikes != null ? userLikes.size() : "null") +
-                ", deleted=" + deleted +
+                ", isDeleted=" + isDeleted +
                 "]";
     }
 
@@ -137,5 +168,5 @@ public class Post {
         }
         Post c = (Post) obj;
         return id != null && id.equals(c.getId());
-    }
+        }
 }

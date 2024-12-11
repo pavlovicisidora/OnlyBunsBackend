@@ -1,34 +1,20 @@
 package com.ISA.OnlyBunsBackend.service;
-import com.ISA.OnlyBunsBackend.model.Post;
+
+import com.ISA.OnlyBunsBackend.dto.PostDTO;
 import com.ISA.OnlyBunsBackend.model.Comment;
-import com.ISA.OnlyBunsBackend.repository.PostRespository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
+import com.ISA.OnlyBunsBackend.model.Post;
 
 import java.util.List;
 
-@Service
-public class PostService {
-
-    @Autowired
-    private PostRespository postRespository;
-
-    public Post findOneByIndex(Integer id){
-        return postRespository.findOneById(id);
-    }
-    public Post save(Post post){
-        return postRespository.save(post);
-    }
-    public List<Post> findAll(){
-        return postRespository.findAll();
-    }
-    public List<Comment> getAllPostComment(Integer postId){
-       return postRespository.getAllPostComment(postId);
-    }
-    public Integer getLikesNumber(Integer postId){
-        return postRespository.getAllPostLikes(postId);
-    }
-
-
-
+public interface PostService {
+    List<PostViewDTO> getAllPosts();
+    PostViewDTO likePost(Integer postId, Integer userId);
+    Comment addComment(Integer postId, Integer userId, String content);
+    PostViewDTO updatePost(Integer postId, Integer userId, String newDescription, String newImage);
+    void deletePost(Integer postId, Integer userId);
+    boolean isLiked(Integer postId, Integer userId);
+    PostDTO createPost(PostDTO post);
+    PostViewDTO getPostById(int id);
+    List<PostViewDTO> getPostsByFollowedUsers(Integer userId);
 }

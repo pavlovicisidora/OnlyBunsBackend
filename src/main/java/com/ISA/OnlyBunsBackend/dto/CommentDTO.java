@@ -1,36 +1,33 @@
 package com.ISA.OnlyBunsBackend.dto;
 
 import com.ISA.OnlyBunsBackend.model.Comment;
-import com.ISA.OnlyBunsBackend.model.User;
+
+import java.time.LocalDateTime;
 
 public class CommentDTO {
-    private int id;
-    private UserDTO user;
+    private Integer id;
+    private int userId;
     private String text;
+    private String authorName;
+    private LocalDateTime createdAt;
 
     public CommentDTO() {
     }
 
     public CommentDTO(Comment comment) {
-        id = comment.getId();
-        user = new UserDTO(comment.getUser());
-        text = comment.getText();
+        this.id = comment.getId();
+        this.userId = comment.getUser().getId();
+        this.text = comment.getText();
+        this.authorName = comment.getUser().getFullName();
+        this.createdAt = comment.getCreatedAt();
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
-    }
-
-    public UserDTO getUser() {
-        return user;
-    }
-
-    public void setUser(UserDTO user) {
-        this.user = user;
     }
 
     public String getText() {
@@ -40,4 +37,20 @@ public class CommentDTO {
     public void setText(String text) {
         this.text = text;
     }
+
+    public String getAuthorName() {
+        return authorName;
+    }
+
+    public void setAuthorName(String authorName) {
+        this.authorName = authorName;
+    }
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
+    public int getUserId() {return userId;}
+    public void setUserId(int userId) {this.userId = userId;}
 }
