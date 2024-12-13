@@ -183,4 +183,27 @@ public class PostServiceImpl implements PostService {
         }
         return postDTOs;
     }
+
+    @Override
+    public List<PostViewDTO> getAllPostsByUserId(Integer userId) {
+        List<Post> posts = postRepository.findAll();
+        List<PostViewDTO> postDTOs = new ArrayList<>();
+
+        for (Post post : posts) {
+            if(post.getUser().getId().equals(userId)) {
+                PostViewDTO postDTO = new PostViewDTO();
+                postDTO.setId(post.getId());
+                postDTO.setUserId(post.getUser().getId());
+                postDTO.setDescription(post.getDescription());
+                postDTO.setImage(post.getImage());
+                postDTO.setLikeCount(post.getLikesCount());
+                postDTO.setComments(post.getComments().stream()
+                        .map(CommentDTO::new)
+                        .toList());
+                postDTO.setTimeOfPublishing(post.getTimeOfPublishing());
+                postDTOs.add(postDTO);
+            }
+        }
+        return postDTOs;
+    }
 }
