@@ -179,6 +179,7 @@ public class UserServiceImpl implements UserService {
         for(User user : users) {
             if(user.getId().equals(id)) {
                 userDTO.setId(user.getId());
+                userDTO.setUsername(user.getUsername());
                 userDTO.setEmail(user.getEmail());
                 userDTO.setFirstName(user.getFirstName());
                 userDTO.setLastName(user.getLastName());
@@ -283,6 +284,7 @@ public class UserServiceImpl implements UserService {
                 .map(user -> {
                     UsersViewDTO userDTO = new UsersViewDTO();
                     userDTO.setId(user.getId());
+                    userDTO.setUsername(user.getUsername());
                     userDTO.setEmail(user.getEmail());
                     userDTO.setFirstName(user.getFirstName());
                     userDTO.setLastName(user.getLastName());

@@ -85,4 +85,10 @@ public class PostController {
     public boolean isLiked(@PathVariable Integer postId, @RequestParam Integer userId) {
         return postService.isLiked(postId, userId);
     }
+
+    @GetMapping("/allUsersPosts/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public List<PostViewDTO> getAllUsersPosts(@PathVariable Integer userId) {
+        return postService.getAllPostsByUserId(userId);
+    }
 }
