@@ -17,4 +17,5 @@ public interface PostService {
     PostDTO createPost(PostDTO post);
     PostViewDTO getPostById(int id);
     List<PostViewDTO> getPostsByFollowedUsers(Integer userId);
+    List<PostViewDTO> getAllPostsByUserId(Integer userId);
 }
