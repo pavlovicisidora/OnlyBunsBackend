@@ -18,11 +18,11 @@ public class LocationDTOMapper {
         this.modelMapper = modelMapper;
     }
 
-    public static Location fromDTOtoUser(LocationDTO dto) {
+    public static Location fromDTOtoLocation(LocationDTO dto) {
         return modelMapper.map(dto, Location.class);
     }
 
-    public static LocationDTO fromUserToDTO(Location location) {
+    public static LocationDTO fromLocationToDTO(Location location) {
         return modelMapper.map(location, LocationDTO.class);
     }
 }

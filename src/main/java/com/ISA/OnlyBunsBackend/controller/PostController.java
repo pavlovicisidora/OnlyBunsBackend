@@ -1,21 +1,25 @@
 package com.ISA.OnlyBunsBackend.controller;
 
 
-import com.ISA.OnlyBunsBackend.dto.CommentDTO;
-import com.ISA.OnlyBunsBackend.dto.PostDTO;
-import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
+import com.ISA.OnlyBunsBackend.dto.*;
+import com.ISA.OnlyBunsBackend.mapper.LocationDTOMapper;
+import com.ISA.OnlyBunsBackend.mapper.UserDTOMapper;
 import com.ISA.OnlyBunsBackend.model.Comment;
+import com.ISA.OnlyBunsBackend.model.Location;
 import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.model.User;
 import com.ISA.OnlyBunsBackend.repository.UserRepository;
+import com.ISA.OnlyBunsBackend.service.LocationService;
 import com.ISA.OnlyBunsBackend.service.PostService;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -25,6 +29,11 @@ public class PostController {
     private PostService postService;
     @Autowired
     private UserService userService;
+    @Autowired
+    private LocationService locationService;
+    @Autowired
+    private LocationDTOMapper locationDTOMapper;
+
 
     @GetMapping
     public List<PostViewDTO> getPosts(Principal user) {
@@ -67,11 +76,24 @@ public class PostController {
         PostViewDTO updatedPost = postService.updatePost(postId, userId, newDescription, newImage);
         return ResponseEntity.ok(updatedPost);
     }
+
+
     @PostMapping("/create")
-    public ResponseEntity<PostDTO> createPost(@RequestBody PostDTO post) {
+    public ResponseEntity<Void> createPost(
+            @RequestBody LocationDTO location,
+            @RequestParam Integer userId,
+            @RequestParam String postDescription,
+            @RequestParam String postImage,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime postTimeOfPublishing
+            ) {
+        LocationDTO newLocation = locationService.createLocation(location);
+        User user = userService.findById(userId);
+        PostDTO post = new PostDTO(postTimeOfPublishing,LocationDTOMapper.fromDTOtoLocation(newLocation),postImage,postDescription,user,0);
+
         PostDTO newPost = postService.createPost(post);
-        return ResponseEntity.ok(newPost);
+        return ResponseEntity.ok().build();
     }
+
 
     @DeleteMapping("/{postId}")
     @PreAuthorize("hasRole('USER')")
