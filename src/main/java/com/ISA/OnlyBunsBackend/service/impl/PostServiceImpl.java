@@ -12,9 +12,12 @@ import com.ISA.OnlyBunsBackend.repository.PostRepository;
 import com.ISA.OnlyBunsBackend.repository.UserRepository;
 import com.ISA.OnlyBunsBackend.service.PostService;
 import jakarta.persistence.EntityNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -24,6 +27,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
+    private final Logger LOG = LoggerFactory.getLogger(PostServiceImpl.class);
     @Autowired
     private PostRepository postRepository;
     @Autowired
@@ -196,14 +200,85 @@ public class PostServiceImpl implements PostService {
                 postDTO.setUserId(post.getUser().getId());
                 postDTO.setDescription(post.getDescription());
                 postDTO.setImage(post.getImage());
+                postDTO.setLocation(post.getLocation());
+                postDTO.setLikeCount(post.getLikesCount());
+                postDTO.setComments(post.getComments().stream()
+                        .map(CommentDTO::new)
+                        .toList());
+                postDTO.setTimeOfPublishing(post.getTimeOfPublishing());
+                if (!postDTO.isDeleted())
+                    postDTOs.add(postDTO);
+            }
+        }
+        return postDTOs;
+    }
+
+    @Override
+    public int getAllPostsCount() {
+        return postRepository.countTotalPosts();
+    }
+
+    @Override
+    public long getPostsCountInLastMonth() {
+        LocalDate oneMonthAgo = LocalDate.now().minusMonths(1);
+        return postRepository.countPostsInLastMonth(oneMonthAgo);
+    }
+
+    @Override
+    public List<PostViewDTO> getTop5MostLikedPostsInLast7Days() {
+
+        LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+        List<Post> posts = postRepository.findTop5MostLikedPostsInLast7Days(sevenDaysAgo);
+        List<PostViewDTO> postDTOs = new ArrayList<>();
+
+        for (Post post : posts) {
+                PostViewDTO postDTO = new PostViewDTO();
+                postDTO.setId(post.getId());
+                postDTO.setUserId(post.getUser().getId());
+                postDTO.setDescription(post.getDescription());
+                postDTO.setImage(post.getImage());
+            postDTO.setLocation(post.getLocation());
                 postDTO.setLikeCount(post.getLikesCount());
                 postDTO.setComments(post.getComments().stream()
                         .map(CommentDTO::new)
                         .toList());
                 postDTO.setTimeOfPublishing(post.getTimeOfPublishing());
                 postDTOs.add(postDTO);
-            }
+            LOG.info("Product with id: " + postDTO.getId() + " successfully cached!");
+
+        }
+
+
+        return postDTOs;
+    }
+
+    @Override
+    public List<PostViewDTO> getTop10MostLikedPostsOfAllTime() {
+        List<Post> posts = postRepository.findTop10MostLikedPostsOfAllTime();
+        List<PostViewDTO> postDTOs = new ArrayList<>();
+
+        for (Post post : posts) {
+            PostViewDTO postDTO = new PostViewDTO();
+            postDTO.setId(post.getId());
+            postDTO.setUserId(post.getUser().getId());
+            postDTO.setDescription(post.getDescription());
+            postDTO.setImage(post.getImage());
+            postDTO.setLocation(post.getLocation());
+            postDTO.setLikeCount(post.getLikesCount());
+            postDTO.setComments(post.getComments().stream()
+                    .map(CommentDTO::new)
+                    .toList());
+            postDTO.setTimeOfPublishing(post.getTimeOfPublishing());
+            postDTOs.add(postDTO);
+            LOG.info("Product with id: " + postDTO.getId() + " successfully cached!");
+
         }
         return postDTOs;
+    }
+
+
+    public void removeFromCache() {
+        LOG.info("Products removed from cache!");
+
     }
 }

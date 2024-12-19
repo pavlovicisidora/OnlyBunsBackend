@@ -3,6 +3,7 @@ package com.ISA.OnlyBunsBackend.service.impl;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
 import com.ISA.OnlyBunsBackend.dto.UserRegistration;
 import com.ISA.OnlyBunsBackend.model.Location;
 import com.ISA.OnlyBunsBackend.model.Post;
@@ -227,6 +228,8 @@ public class UserServiceImpl implements UserService {
         return new UsersViewDTO(userRepository.findOneById(id).get());
     }
 
+
+
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
     public UsersViewDTO followUser(Integer followerId, Integer followedId) {
@@ -292,6 +295,27 @@ public class UserServiceImpl implements UserService {
                     userDTO.setPostCount(user.getPostCount());
                     return userDTO;
                 }).toList();
+    }
+
+
+    @Override
+    public List<UsersViewDTO> getTop10UsersWhoSharedMostLikesInLast7Days() {
+        List<User> users = userRepository.findTop10UsersWhoSharedMostLikesInLast7Days();
+        List<UsersViewDTO> userDTOs = new ArrayList<>();
+
+        for(User user : users) {
+            UsersViewDTO userDTO = new UsersViewDTO();
+                userDTO.setId(user.getId());
+                userDTO.setUsername(user.getUsername());
+                userDTO.setEmail(user.getEmail());
+                userDTO.setFirstName(user.getFirstName());
+                userDTO.setLastName(user.getLastName());
+                userDTO.setFollowersCount(user.getFollowersCount());
+                userDTO.setPostCount(user.getPostCount());
+                userDTOs.add(userDTO);
+
+        }
+        return userDTOs;
     }
 }
 

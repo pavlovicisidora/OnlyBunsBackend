@@ -40,4 +40,18 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("select u from User u where u.id = :id")
     @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="0")})
     public Optional<User> findOneById(@Param("id")Integer id);
+
+
+    @Query(value = """
+    SELECT u.*, COUNT(pul.user_id) AS likeCount
+    FROM "users" u
+    JOIN post_user_likes pul ON u.id = pul.user_id
+    JOIN post p ON pul.post_id = p.id
+    WHERE p.time_of_publishing >= CURRENT_DATE - INTERVAL '7 days' AND u.is_activated = true AND u.is_deleted = false
+    GROUP BY u.id
+    ORDER BY likeCount DESC
+    LIMIT 10
+    """, nativeQuery = true)
+    List<User> findTop10UsersWhoSharedMostLikesInLast7Days();
+
 }
