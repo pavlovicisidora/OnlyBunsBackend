@@ -35,4 +35,6 @@ public interface UserService {
     boolean isFollowing(int followerId, int followedUserId);
     List<UsersViewDTO> getFollowingUsers(Integer userId);
     UsersViewDTO findOneById(Integer id);
+
+    List<UsersViewDTO> getTop10UsersWhoSharedMostLikesInLast7Days();
 }

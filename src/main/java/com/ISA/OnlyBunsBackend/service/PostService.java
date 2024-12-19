@@ -4,6 +4,8 @@ import com.ISA.OnlyBunsBackend.dto.PostDTO;
 import com.ISA.OnlyBunsBackend.model.Comment;
 import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
 import com.ISA.OnlyBunsBackend.model.Post;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 
 import java.util.List;
 
@@ -18,4 +20,15 @@ public interface PostService {
     PostViewDTO getPostById(int id);
     List<PostViewDTO> getPostsByFollowedUsers(Integer userId);
     List<PostViewDTO> getAllPostsByUserId(Integer userId);
+
+   int getAllPostsCount();
+   long getPostsCountInLastMonth();
+   @Cacheable(cacheNames = "allPostsInLast7Days")
+   List<PostViewDTO> getTop5MostLikedPostsInLast7Days();
+
+    @Cacheable(cacheNames = "allPostsOfAllTimes")
+   List<PostViewDTO> getTop10MostLikedPostsOfAllTime();
+
+    @CacheEvict(cacheNames = {"allPostsOfAllTimes", "allPostsInLast7Days"}, allEntries = true)
+    void removeFromCache();
 }

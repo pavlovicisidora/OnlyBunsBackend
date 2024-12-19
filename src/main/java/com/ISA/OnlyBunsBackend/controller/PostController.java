@@ -113,4 +113,33 @@ public class PostController {
     public List<PostViewDTO> getAllUsersPosts(@PathVariable Integer userId) {
         return postService.getAllPostsByUserId(userId);
     }
+
+
+    @GetMapping("/countPosts")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<Integer> getTotalPostsCount() {
+        int count = postService.getAllPostsCount();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/count/last-month")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<Long> getPostsCountInLastMonth() {
+        long count = postService.getPostsCountInLastMonth();
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/top-liked-7-days")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<PostViewDTO>> getTop5MostLikedPostsInLast7Days() {
+        List<PostViewDTO> posts = postService.getTop5MostLikedPostsInLast7Days();
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/top-10-liked-in-forever")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<List<PostViewDTO>> getTop10MostLikedPostsOfAllTimes() {
+        List<PostViewDTO> posts = postService.getTop10MostLikedPostsOfAllTime();
+        return ResponseEntity.ok(posts);
+    }
 }

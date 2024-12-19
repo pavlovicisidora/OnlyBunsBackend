@@ -1,5 +1,6 @@
 package com.ISA.OnlyBunsBackend.dto;
 
+import com.ISA.OnlyBunsBackend.model.Location;
 import com.ISA.OnlyBunsBackend.model.Post;
 
 import java.time.LocalDateTime;
@@ -10,6 +11,7 @@ public class PostViewDTO {
     private int userId;
     private String description;
     private String image;
+    private Location location;
     private int likeCount;
     private List<CommentDTO> comments;
     private boolean isDeleted = false;
@@ -40,6 +42,7 @@ public class PostViewDTO {
         this.likeCount = post.getLikesCount();
         this.comments = post.getComments().stream().map(CommentDTO::new).toList();
         this.isDeleted = post.isDeleted();
+        this.location = post.getLocation();
         this.timeOfPublishing = post.getTimeOfPublishing();
     }
 
@@ -95,4 +98,12 @@ public class PostViewDTO {
 
     public Integer getUserId() {return userId;}
     public void setUserId(Integer userId) {this.userId = userId;}
+
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }
