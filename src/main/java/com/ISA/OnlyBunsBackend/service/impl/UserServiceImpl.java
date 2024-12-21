@@ -238,6 +238,7 @@ public class UserServiceImpl implements UserService {
         }
         User follower = userRepository.findOneById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
+
         User followed = userRepository.findOneById(followedId)
                 .orElseThrow(() -> new EntityNotFoundException("User to follow not found"));
 

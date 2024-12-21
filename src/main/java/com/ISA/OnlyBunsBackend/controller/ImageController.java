@@ -33,6 +33,7 @@ public class ImageController {
             if (imageBytes != null) {
                 HttpHeaders headers = new HttpHeaders();
                 headers.add("Content-Type", "image/jpeg"); // Postavi odgovarajući tip
+                headers.add(HttpHeaders.CACHE_CONTROL, "immutable, max-age=86400");
                 return new ResponseEntity<>(imageBytes, headers, HttpStatus.OK);
             } else {
                 return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);

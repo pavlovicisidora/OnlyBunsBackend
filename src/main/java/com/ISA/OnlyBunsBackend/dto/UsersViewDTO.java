@@ -18,7 +18,7 @@ public class UsersViewDTO {
     public UsersViewDTO() {
     }
 
-    public UsersViewDTO(Integer id,String username, String firstName, String lastName, String email, int postCount, int followersCount) {
+    public UsersViewDTO(Integer id, String username, String firstName, String lastName, String email, int postCount, int followersCount) {
         this.id = id;
         this.username = username;
         this.firstName = firstName;
