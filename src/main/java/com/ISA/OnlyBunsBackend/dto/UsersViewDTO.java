@@ -1,6 +1,7 @@
 package com.ISA.OnlyBunsBackend.dto;
 
 import com.ISA.OnlyBunsBackend.model.Post;
+import com.ISA.OnlyBunsBackend.model.Role;
 import com.ISA.OnlyBunsBackend.model.User;
 
 import java.util.ArrayList;
@@ -12,6 +13,7 @@ public class UsersViewDTO {
     private String firstName;
     private String lastName;
     private String email;
+    private Role role;
     private int postCount;
     private int followersCount;
 
@@ -34,7 +36,7 @@ public class UsersViewDTO {
         this.firstName = user.getFirstName();
         this.lastName = user.getLastName();
         this.email = user.getEmail();
-
+        this.role = user.getRole();
         this.postCount = user.getPostCount();
         this.followersCount = user.getFollowersCount();
     }
@@ -88,5 +90,8 @@ public class UsersViewDTO {
     }
     public String getUsername() { return username;}
     public void setUsername(String username) {this.username = username;}
+
+    public Role getRole() {return role;}
+    public void setRole(Role role) {this.role = role;}
 
 }
