@@ -39,8 +39,8 @@ public class UserController {
 
     @GetMapping("/userInfo")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
-    public User user(Principal user) {
-        return this.userService.findByUsername(user.getName());
+    public UsersViewDTO user(Principal user) {
+        return this.userService.getUserByUsername(user.getName());
     }
 
     @GetMapping("/profile/{id}")

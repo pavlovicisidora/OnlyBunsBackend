@@ -16,6 +16,7 @@ import java.util.List;
 public interface UserService {
     User findById(int id);
     User findByUsername(String username);
+    UsersViewDTO getUserByUsername(String username);
     List<User> findAll ();
     User save(UserRegistration userRequest);
     User updateUser(User updatedUser);
