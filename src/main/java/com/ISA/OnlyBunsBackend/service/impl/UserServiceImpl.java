@@ -237,12 +237,11 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
     @Transactional(readOnly = false)
     public UsersViewDTO findOneById(Integer id) {
         return new UsersViewDTO(userRepository.findOneById(id).get());
     }
-
-
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)

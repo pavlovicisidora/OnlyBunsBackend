@@ -37,6 +37,8 @@ public class PostController {
 
     @GetMapping
     public List<PostViewDTO> getPosts(Principal user) {
+        if(user == null)
+            return postService.getAllPosts();
         User loggedInUser = this.userService.findByUsername(user.getName());
         if(loggedInUser.getRole().getId() == 1)
             return postService.getAllPosts();
