@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Date;
 
 public interface CommentRepository extends JpaRepository<Comment, Integer> {
     @Query(value = """
@@ -31,4 +32,12 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
 
     @Query("SELECT COUNT(DISTINCT c.user.id) FROM Comment c")
     long countDistinctUsersWithComments();
+    
+    @Query(value = """
+    SELECT COUNT(c.id) <= 60
+    FROM comment c
+    WHERE c.user_id = :userId
+      AND c.created_at > NOW() - INTERVAL '1 hour'
+    """, nativeQuery = true)
+    boolean canUserCommentPost(@Param("userId") int userId);
 }
