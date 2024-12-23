@@ -54,4 +54,6 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     """, nativeQuery = true)
     List<User> findTop10UsersWhoSharedMostLikesInLast7Days();
 
+    @Query("SELECT COUNT(u) FROM User u WHERE u.role.id = 2")
+    Integer countUsers();
 }

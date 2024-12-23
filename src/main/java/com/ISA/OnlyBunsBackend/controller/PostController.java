@@ -31,9 +31,6 @@ public class PostController {
     private UserService userService;
     @Autowired
     private LocationService locationService;
-    @Autowired
-    private LocationDTOMapper locationDTOMapper;
-
 
     @GetMapping
     public List<PostViewDTO> getPosts(Principal user) {
