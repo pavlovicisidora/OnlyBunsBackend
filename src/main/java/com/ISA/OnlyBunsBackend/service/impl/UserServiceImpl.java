@@ -55,6 +55,20 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findByUsername(username);
 	}
 
+    public UsersViewDTO getUserByUsername(String username) throws UsernameNotFoundException {
+        User user = userRepository.findByUsername(username);
+        UsersViewDTO dto = new UsersViewDTO();
+        dto.setId(user.getId());
+        dto.setUsername(user.getUsername());
+        dto.setFirstName(user.getFirstName());
+        dto.setLastName(user.getLastName());
+        dto.setRole(user.getRole());
+        dto.setEmail(user.getEmail());
+        dto.setPostCount(user.getPostCount());
+        dto.setFollowersCount(user.getFollowersCount());
+        return dto;
+    }
+
 	public User findById(int id) throws AccessDeniedException {
 		return userRepository.findById(id).orElseGet(null);
 	}
