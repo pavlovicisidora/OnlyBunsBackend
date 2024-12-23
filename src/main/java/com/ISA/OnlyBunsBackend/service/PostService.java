@@ -21,6 +21,7 @@ public interface PostService {
     List<PostViewDTO> getPostsByFollowedUsers(Integer userId);
     List<PostViewDTO> getAllPostsByUserId(Integer userId);
 
+    boolean canUserComment(Integer userId);
    int getAllPostsCount();
    long getPostsCountInLastMonth();
    @Cacheable(cacheNames = "allPostsInLast7Days")

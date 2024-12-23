@@ -68,6 +68,15 @@ public class PostController {
         return ResponseEntity.ok(new CommentDTO(newComment));
     }
 
+    @GetMapping("/canComment")
+    @PreAuthorize("hasRole('USER')")
+    public ResponseEntity<Boolean> canUserComment(
+            @RequestParam Integer userId
+    ){
+        boolean isCommentable = postService.canUserComment(userId);
+        return ResponseEntity.ok( isCommentable);
+    }
+
     @PutMapping("/{postId}")
     @PreAuthorize("hasRole('USER')")
     public ResponseEntity<PostViewDTO> updatePost(
