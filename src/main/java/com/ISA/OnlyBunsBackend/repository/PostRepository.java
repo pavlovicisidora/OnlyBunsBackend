@@ -8,11 +8,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "SELECT COUNT(*) FROM Post", nativeQuery = true)
     int countTotalPosts();
-
 
     @Query(value = "SELECT COUNT(*) FROM Post p WHERE p.time_of_publishing >= :startDate", nativeQuery = true)
     long countPostsInLastMonth(@Param("startDate") LocalDate startDate);
@@ -28,7 +29,6 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     """, nativeQuery = true)
     List<Post> findTop5MostLikedPostsInLast7Days(@Param("startDate") LocalDate startDate);
 
-
     @Query(value = """
     SELECT p.* 
     FROM post p 
@@ -40,4 +40,24 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     """, nativeQuery = true)
     List<Post> findTop10MostLikedPostsOfAllTime();
 
+    @Query(value = """
+    SELECT
+        CASE
+            WHEN :format = 'weekly' THEN TO_CHAR(p.time_of_publishing, 'IYYY-IW')
+            WHEN :format = 'monthly' THEN TO_CHAR(p.time_of_publishing, 'YYYY-MM')
+            WHEN :format = 'yearly' THEN TO_CHAR(p.time_of_publishing, 'YYYY')
+        END AS format,
+        COUNT(*) AS postCount
+    FROM post p
+    WHERE p.time_of_publishing BETWEEN :startDate AND :endDate
+    GROUP BY format
+    ORDER BY format
+    """, nativeQuery = true)
+    List<Object[]> countPostsByInterval(@Param("format") String format, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query(value = "SELECT MIN(CAST(time_of_publishing AS DATE)) FROM post p", nativeQuery = true)
+    Optional<LocalDate> findEarliestPostDate();
+
+    @Query("SELECT COUNT(DISTINCT p.user.id) FROM Post p")
+    long countDistinctUsersWithPosts();
 }
