@@ -34,7 +34,7 @@ public class OnlyBunsBackendApplicationTests {
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
-			userService.followUser(1, 2);
+			userService.followUser(4, 2);
 		});
 		try {
 			future1.get();

@@ -237,12 +237,11 @@ public class UserServiceImpl implements UserService {
         }
         return false;
     }
+
     @Transactional(readOnly = false)
     public UsersViewDTO findOneById(Integer id) {
         return new UsersViewDTO(userRepository.findOneById(id).get());
     }
-
-
 
     @Override
     @Transactional(readOnly = false, propagation = Propagation.REQUIRES_NEW)
@@ -252,6 +251,7 @@ public class UserServiceImpl implements UserService {
         }
         User follower = userRepository.findOneById(followerId)
                 .orElseThrow(() -> new EntityNotFoundException("Follower not found"));
+
         User followed = userRepository.findOneById(followedId)
                 .orElseThrow(() -> new EntityNotFoundException("User to follow not found"));
 

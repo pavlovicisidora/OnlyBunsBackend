@@ -38,8 +38,8 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select u from User u where u.id = :id")
-    @QueryHints({@QueryHint(name = "javax.persistence.lock.timeout", value ="0")})
-    public Optional<User> findOneById(@Param("id")Integer id);
+    @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value ="0")})
+    Optional<User> findOneById(@Param("id")Integer id);
 
 
     @Query(value = """
