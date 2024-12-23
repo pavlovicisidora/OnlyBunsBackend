@@ -27,7 +27,7 @@ public class ImageController {
     }
 
     @GetMapping
-    public ResponseEntity<byte[]> getImage(@RequestParam("filePath") String pictureURL) {
+    public ResponseEntity<byte[]> getImage(@RequestParam("pictureURL") String pictureURL) {
         try {
             byte[] imageBytes = imageService.getImage("src/main/resources/static/post.images/", pictureURL);
             if (imageBytes != null) {
