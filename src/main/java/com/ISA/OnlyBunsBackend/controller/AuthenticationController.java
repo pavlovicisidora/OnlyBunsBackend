@@ -7,6 +7,7 @@ import com.ISA.OnlyBunsBackend.dto.UserTokenState;
 import com.ISA.OnlyBunsBackend.exception.ResourceConflictException;
 import com.ISA.OnlyBunsBackend.model.User;
 import com.ISA.OnlyBunsBackend.service.EmailService;
+import com.ISA.OnlyBunsBackend.service.LastLoginService;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import com.ISA.OnlyBunsBackend.util.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,10 @@ public class AuthenticationController {
     @Autowired
     private EmailService emailService;
 
+    @Autowired
+    private LastLoginService lastLoginService;
+
+
     // Prvi endpoint koji pogadja korisnik kada se loguje.
     // Tada zna samo svoje korisnicko ime i lozinku i to prosledjuje na backend.
     @PostMapping("/login")
@@ -58,6 +63,10 @@ public class AuthenticationController {
             User user = (User) authentication.getPrincipal();
             String jwt = tokenUtils.generateToken(user.getUsername());
             int expiresIn = tokenUtils.getExpiredIn();
+
+            if(user.getRole().getName().equals("ROLE_USER") ) {
+                lastLoginService.updateLastLoginInfo(user.getId());
+            }
 
             // Vrati token kao odgovor na uspesnu autentifikaciju
             return ResponseEntity.ok(new UserTokenState(jwt, expiresIn));

@@ -40,4 +40,20 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     """, nativeQuery = true)
     List<Post> findTop10MostLikedPostsOfAllTime();
 
+    @Query(value = """
+    SELECT COUNT(pul.user_id)
+    FROM post p
+    LEFT JOIN post_user_likes pul ON p.id = pul.post_id
+    WHERE p.user_id = :userId
+    """, nativeQuery = true)
+    int getUserPostsLikesCount(@Param("userId") int userId);
+
+
+    @Query(value = """
+    SELECT COUNT(c.user_id)
+    FROM comment c
+    LEFT JOIN post p ON p.id = c.post_id
+    WHERE p.user_id = :userId
+    """,nativeQuery = true)
+    int getUserPostsCommentsCount(int userId);
 }
