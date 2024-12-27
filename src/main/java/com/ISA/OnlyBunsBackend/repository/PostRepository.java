@@ -41,6 +41,26 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     List<Post> findTop10MostLikedPostsOfAllTime();
 
     @Query(value = """
+    SELECT
+        CASE
+            WHEN :format = 'weekly' THEN TO_CHAR(p.time_of_publishing, 'IYYY-IW')
+            WHEN :format = 'monthly' THEN TO_CHAR(p.time_of_publishing, 'YYYY-MM')
+            WHEN :format = 'yearly' THEN TO_CHAR(p.time_of_publishing, 'YYYY')
+        END AS format,
+        COUNT(*) AS postCount
+    FROM post p
+    WHERE p.time_of_publishing BETWEEN :startDate AND :endDate
+    GROUP BY format
+    ORDER BY format
+    """, nativeQuery = true)
+    List<Object[]> countPostsByInterval(@Param("format") String format, @Param("startDate") LocalDate startDate, @Param("endDate") LocalDate endDate);
+
+    @Query(value = "SELECT MIN(CAST(time_of_publishing AS DATE)) FROM post p", nativeQuery = true)
+    Optional<LocalDate> findEarliestPostDate();
+
+    @Query("SELECT COUNT(DISTINCT p.user.id) FROM Post p")
+    long countDistinctUsersWithPosts();
+    @Query(value = """
     SELECT COUNT(pul.user_id)
     FROM post p
     LEFT JOIN post_user_likes pul ON p.id = pul.post_id

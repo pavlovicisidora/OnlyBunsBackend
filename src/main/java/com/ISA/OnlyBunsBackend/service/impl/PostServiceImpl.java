@@ -48,6 +48,7 @@ public class PostServiceImpl implements PostService {
             postDTO.setUserId(post.getUser().getId());
             postDTO.setDescription(post.getDescription());
             postDTO.setImage(post.getImage());
+            postDTO.setLocation(post.getLocation());
             postDTO.setLikeCount(post.getLikesCount());
             postDTO.setComments(post.getComments().stream()
                     .map(CommentDTO::new)
@@ -152,6 +153,7 @@ public class PostServiceImpl implements PostService {
         postDTO.setDescription(post.getDescription());
         postDTO.setImage(post.getImage());
         postDTO.setLikeCount(post.getLikesCount());
+        postDTO.setLocation(post.getLocation());
         postDTO.setComments(post.getComments().stream()
                 .map(CommentDTO::new)
                 .toList());
@@ -177,6 +179,7 @@ public class PostServiceImpl implements PostService {
             postDTO.setDescription(post.getDescription());
             postDTO.setImage(post.getImage());
             postDTO.setLikeCount(post.getLikesCount());
+            postDTO.setLocation(post.getLocation());
             postDTO.setComments(post.getComments().stream()
                     .map(CommentDTO::new)
                     .toList());
