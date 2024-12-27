@@ -8,12 +8,12 @@ import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface PostRepository extends JpaRepository<Post, Integer> {
     @Query(value = "SELECT COUNT(*) FROM Post", nativeQuery = true)
     int countTotalPosts();
+
 
     @Query(value = "SELECT COUNT(*) FROM Post p WHERE p.time_of_publishing >= :startDate", nativeQuery = true)
     long countPostsInLastMonth(@Param("startDate") LocalDate startDate);
@@ -28,6 +28,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     LIMIT 5
     """, nativeQuery = true)
     List<Post> findTop5MostLikedPostsInLast7Days(@Param("startDate") LocalDate startDate);
+
 
     @Query(value = """
     SELECT p.* 
@@ -60,4 +61,20 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
 
     @Query("SELECT COUNT(DISTINCT p.user.id) FROM Post p")
     long countDistinctUsersWithPosts();
+    @Query(value = """
+    SELECT COUNT(pul.user_id)
+    FROM post p
+    LEFT JOIN post_user_likes pul ON p.id = pul.post_id
+    WHERE p.user_id = :userId
+    """, nativeQuery = true)
+    int getUserPostsLikesCount(@Param("userId") int userId);
+
+
+    @Query(value = """
+    SELECT COUNT(c.user_id)
+    FROM comment c
+    LEFT JOIN post p ON p.id = c.post_id
+    WHERE p.user_id = :userId
+    """,nativeQuery = true)
+    int getUserPostsCommentsCount(int userId);
 }

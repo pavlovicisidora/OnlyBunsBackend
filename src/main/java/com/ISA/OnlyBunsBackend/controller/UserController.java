@@ -1,15 +1,18 @@
 package com.ISA.OnlyBunsBackend.controller;
 
+import java.io.IOException;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
 import com.ISA.OnlyBunsBackend.model.User;
 import com.ISA.OnlyBunsBackend.repository.UserRepository;
+import com.ISA.OnlyBunsBackend.service.LastLoginService;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,6 +31,8 @@ public class UserController {
     private AuthenticationManager authenticationManager;
     @Autowired
     private UserRepository userRepository;
+    @Autowired
+    private LastLoginService lastLoginService;
 
     @GetMapping("/all")
     @PreAuthorize("hasRole('ADMIN')")

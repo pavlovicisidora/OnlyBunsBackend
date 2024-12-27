@@ -38,4 +38,5 @@ public interface UserService {
     UsersViewDTO findOneById(Integer id);
 
     List<UsersViewDTO> getTop10UsersWhoSharedMostLikesInLast7Days();
+
 }
