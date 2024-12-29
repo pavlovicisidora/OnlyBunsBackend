@@ -10,6 +10,8 @@ import com.ISA.OnlyBunsBackend.model.User;
 import com.ISA.OnlyBunsBackend.repository.LocationRepository;
 import com.ISA.OnlyBunsBackend.service.LocationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +33,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
+    @CachePut(cacheNames  = "locationCache", key = "#result.id")
     public LocationDTO createLocation(LocationDTO locDto) {
         Location loc = LocationDTOMapper.fromDTOtoLocation(locDto);
         loc = locationRepository.save(loc);

@@ -57,4 +57,12 @@
         </resources>
     </cache>
 
+    <cache alias="locationCache" uses-template="default">
+        <key-type>java.lang.Integer</key-type>
+        <value-type>com.ISA.OnlyBunsBackend.dto.LocationDTO</value-type>
+        <resources>
+            <heap>100</heap>
+        </resources>
+    </cache>
+
 </config>

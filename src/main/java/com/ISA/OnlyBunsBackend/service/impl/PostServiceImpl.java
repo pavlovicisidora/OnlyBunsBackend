@@ -11,11 +11,16 @@ import com.ISA.OnlyBunsBackend.repository.CommentRepository;
 import com.ISA.OnlyBunsBackend.repository.PostRepository;
 import com.ISA.OnlyBunsBackend.repository.UserRepository;
 import com.ISA.OnlyBunsBackend.service.PostService;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.LockModeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DateTimeException;
 import java.time.LocalDate;
@@ -32,6 +37,8 @@ public class PostServiceImpl implements PostService {
     private UserRepository userRepository;
     @Autowired
     private CommentRepository commentRepository;
+    @Autowired
+    private EntityManager entityManager;
     ;
 
     @Override
@@ -62,9 +69,10 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public PostViewDTO likePost(Integer postId, Integer userId) {
-        Post post = postRepository.findById(postId)
-                .orElseThrow(() -> new EntityNotFoundException("Post not found"));
+        Post post = entityManager.find(Post.class, postId, LockModeType.PESSIMISTIC_WRITE);
+
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
@@ -145,6 +153,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+ //   @Cacheable(value = "locationCache")
     public PostViewDTO getPostById(int id) {
         Post post = postRepository.findById(id).orElseGet(null);
         PostViewDTO postDTO = new PostViewDTO();
