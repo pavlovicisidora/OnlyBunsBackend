@@ -1,5 +1,6 @@
 package com.ISA.OnlyBunsBackend;
 
+import com.ISA.OnlyBunsBackend.service.PostService;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -12,12 +13,17 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import static org.junit.Assert.assertEquals;
+
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 public class OnlyBunsBackendApplicationTests {
 	@Autowired
 	private UserService userService;
+
+	@Autowired
+	private PostService postService;
 
 	@Test(expected = PessimisticLockingFailureException.class)
 	public void testPessimisticLockingScenario() throws Throwable {
@@ -44,6 +50,25 @@ public class OnlyBunsBackendApplicationTests {
 			throw e.getCause();
 		}
 		executor.shutdown();
+	}
+
+	@Test
+	public void testConcurrentLikes() throws InterruptedException {
+		// Pokretanje dva niti za testiranje konkurentnog lajkovanja
+		Thread thread1 = new Thread(() -> postService.likePost(1, 1));
+		Thread thread2 = new Thread(() -> postService.likePost(1, 2));
+
+		thread1.start();
+		thread2.start();
+
+		// Čekanje da se obe niti završe
+		thread1.join();
+		thread2.join();
+
+
+		int likeCount =postService.getPostById(1).getLikeCount();
+
+		assertEquals(3, likeCount);
 	}
 
 }
