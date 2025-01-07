@@ -3,8 +3,10 @@ package com.ISA.OnlyBunsBackend.service.impl;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.ISA.OnlyBunsBackend.dto.LocationDTO;
 import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
 import com.ISA.OnlyBunsBackend.dto.UserRegistration;
+import com.ISA.OnlyBunsBackend.mapper.LocationDTOMapper;
 import com.ISA.OnlyBunsBackend.model.Location;
 import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.model.Role;
@@ -88,8 +90,8 @@ public class UserServiceImpl implements UserService {
 		
 		u.setFirstName(userRequest.getFirstName());
 		u.setLastName(userRequest.getLastName());
-		Location location = locationServiceImpl.findById(userRequest.getLocation().getId());
-		u.setLocation(location);
+		LocationDTO location = locationServiceImpl.createLocation(userRequest.getLocation());
+		u.setLocation(LocationDTOMapper.fromDTOtoLocation(location));
 		u.setActivated(false);
 		u.setEmail(userRequest.getEmail());
 
@@ -198,6 +200,7 @@ public class UserServiceImpl implements UserService {
                 userDTO.setEmail(user.getEmail());
                 userDTO.setFirstName(user.getFirstName());
                 userDTO.setLastName(user.getLastName());
+                userDTO.setLocation(user.getLocation());
                 userDTO.setFollowersCount(user.getFollowersCount());
                 userDTO.setPostCount(user.getPostCount());
             }
@@ -297,6 +300,25 @@ public class UserServiceImpl implements UserService {
     public List<UsersViewDTO> getFollowingUsers(Integer userId) {
         List<User> followings = userRepository.findFollowingUsers(userId);
         return followings.stream()
+                .filter(user -> !user.isDeleted())
+                .map(user -> {
+                    UsersViewDTO userDTO = new UsersViewDTO();
+                    userDTO.setId(user.getId());
+                    userDTO.setUsername(user.getUsername());
+                    userDTO.setEmail(user.getEmail());
+                    userDTO.setFirstName(user.getFirstName());
+                    userDTO.setLastName(user.getLastName());
+                    userDTO.setFollowersCount(getFollowersCount(user.getId()));
+                    userDTO.setPostCount(user.getPostCount());
+                    return userDTO;
+                }).toList();
+    }
+
+
+    @Override
+    public List<UsersViewDTO> getFollowersByUserId(Integer userId) {
+        List<User> folowers = userRepository.findFollowersByUserId(userId);
+        return folowers.stream()
                 .filter(user -> !user.isDeleted())
                 .map(user -> {
                     UsersViewDTO userDTO = new UsersViewDTO();
