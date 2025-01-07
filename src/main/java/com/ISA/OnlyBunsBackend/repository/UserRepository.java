@@ -37,6 +37,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT u FROM User u JOIN u.followers f WHERE f.id = :userId")
     List<User> findFollowingUsers(@Param("userId") Integer userId);
 
+    @Query("SELECT u FROM User u JOIN u.followings f WHERE f.id = :userId")
+    List<User> findFollowersByUserId(@Param("userId") Integer userId);
+
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select u from User u where u.id = :id")
     @QueryHints({@QueryHint(name = "jakarta.persistence.lock.timeout", value ="0")})

@@ -94,6 +94,12 @@ public class UserController {
         return userService.getFollowingUsers(userId);
     }
 
+    @GetMapping("/followers/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public List<UsersViewDTO> getFollowers(@PathVariable Integer userId) {
+        return userService.getFollowersByUserId(userId);
+    }
+
     @GetMapping("/top-10-users-for-likes")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<UsersViewDTO>> getTopUsersWhoSharedMostLikesInLast7Days() {
