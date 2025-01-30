@@ -11,6 +11,7 @@ import com.ISA.OnlyBunsBackend.repository.CommentRepository;
 import com.ISA.OnlyBunsBackend.repository.PostRepository;
 import com.ISA.OnlyBunsBackend.repository.UserRepository;
 import com.ISA.OnlyBunsBackend.service.PostService;
+import io.github.resilience4j.ratelimiter.RequestNotPermitted;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.LockModeType;
@@ -39,7 +40,8 @@ public class PostServiceImpl implements PostService {
     private CommentRepository commentRepository;
     @Autowired
     private EntityManager entityManager;
-    ;
+    @Autowired
+    private RateLimiterServiceImpl rateLimiterService;
 
     @Override
     public List<PostViewDTO> getAllPosts() {
@@ -103,18 +105,24 @@ public class PostServiceImpl implements PostService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
 
-        Comment comment = new Comment();
-        comment.setPost(post);
-        comment.setUser(user);
-        comment.setText(text);
-        comment.setCreatedAt(LocalDateTime.now());
+        if(rateLimiterService.isAllowed(userId)) {
 
-        post.getComments().add(comment);
+            Comment comment = new Comment();
+            comment.setPost(post);
+            comment.setUser(user);
+            comment.setText(text);
+            comment.setCreatedAt(LocalDateTime.now());
 
-        commentRepository.save(comment);
-        postRepository.save(post);
+            post.getComments().add(comment);
 
-        return comment;
+            commentRepository.save(comment);
+            postRepository.save(post);
+
+            return comment;
+        } else {
+            LOG.warn("Prevazidjen broj poziva u ogranicenom vremenskom intervalu");
+            throw new RuntimeException("Rate limit exceeded for user: " + userId);
+        }
     }
 
     @Override

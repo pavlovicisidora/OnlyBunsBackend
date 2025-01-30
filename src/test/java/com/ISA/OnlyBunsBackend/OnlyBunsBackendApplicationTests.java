@@ -71,4 +71,16 @@ public class OnlyBunsBackendApplicationTests {
 		assertEquals(3, likeCount);
 	}
 
+	@Test(expected = RuntimeException.class)
+	public void RateLimiterBreaks() throws InterruptedException {
+		// Postavljanje komentara do 5 komentara
+		postService.addComment(1, 1, "Komentar 1");
+		postService.addComment(1, 1, "Komentar 2");
+		postService.addComment(1, 1, "Komentar 3");
+		postService.addComment(1, 1, "Komentar 4");
+		postService.addComment(1, 1, "Komentar 5");
+
+		// Očekujemo da 6. komentar baci RuntimeException
+		postService.addComment(1, 1, "Komentar 6");
+	}
 }
