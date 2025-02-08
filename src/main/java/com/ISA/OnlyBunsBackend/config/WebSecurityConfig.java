@@ -65,6 +65,7 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("api/**").permitAll()
+                .requestMatchers("/actuator/**").permitAll()    //Pristpud za Prometheus
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")  // Swagger URLs
                 .permitAll()
                 .anyRequest().authenticated()  // For other routes, authentication is required
