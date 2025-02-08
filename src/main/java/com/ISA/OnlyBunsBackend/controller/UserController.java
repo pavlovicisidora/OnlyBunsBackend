@@ -100,4 +100,15 @@ public class UserController {
         List<UsersViewDTO> topUsers = userService.getTop10UsersWhoSharedMostLikesInLast7Days();
         return ResponseEntity.ok(topUsers);
     }
+
+    @PutMapping("/logout")
+    public ResponseEntity<Void> logout(){
+
+        //Ova metoda ne radi nista, koristim je samo da preko Prometheusa mogu da zabelezim
+        //koliko je korisnika online. (br poziva logina - br poziva logouta).
+        //Ako neko zeli da je iskoristi slobodno, samo ako promenite putanju ili dobate neku
+        //PathVariable, onda javite.
+
+        return ResponseEntity.ok().build();
+    }
 }
