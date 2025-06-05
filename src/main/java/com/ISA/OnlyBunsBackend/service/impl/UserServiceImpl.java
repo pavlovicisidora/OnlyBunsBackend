@@ -6,6 +6,7 @@ import java.util.*;
 import com.ISA.OnlyBunsBackend.dto.LocationDTO;
 import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
 import com.ISA.OnlyBunsBackend.dto.UserRegistration;
+import com.ISA.OnlyBunsBackend.exception.ResourceConflictException;
 import com.ISA.OnlyBunsBackend.mapper.LocationDTOMapper;
 import com.ISA.OnlyBunsBackend.model.Location;
 import com.ISA.OnlyBunsBackend.model.Post;
@@ -17,6 +18,7 @@ import com.ISA.OnlyBunsBackend.service.RoleService;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -79,15 +81,16 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findAll();
 	}
 
-	@Override
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
 	public User save(UserRegistration userRequest) {
 		User u = new User();
 		u.setUsername(userRequest.getUsername());
-		
+
 		// pre nego sto postavimo lozinku u atribut hesiramo je kako bi se u bazi nalazila hesirana lozinka
 		// treba voditi racuna da se koristi isi password encoder bean koji je postavljen u AUthenticationManager-u kako bi koristili isti algoritam
 		u.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-		
+
 		u.setFirstName(userRequest.getFirstName());
 		u.setLastName(userRequest.getLastName());
 		LocationDTO location = locationServiceImpl.createLocation(userRequest.getLocation());
@@ -98,8 +101,18 @@ public class UserServiceImpl implements UserService {
 		// u primeru se registruju samo obicni korisnici i u skladu sa tim im se i dodeljuje samo rola USER
 		Role role = roleService.findByName("ROLE_USER");
 		u.setRole(role);
-		
-		return this.userRepository.save(u);
+
+        try {
+            // Simuliraj delay da bi testirao konkurentni pristup
+            Thread.sleep(2000);  // 2 sekunde
+
+            return this.userRepository.save(u);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ResourceConflictException(0, "Username already exists (DB constraint)");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted during save");
+        }
 	}
 
 

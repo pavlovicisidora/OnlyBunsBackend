@@ -1,5 +1,7 @@
 package com.ISA.OnlyBunsBackend;
 
+import com.ISA.OnlyBunsBackend.dto.LocationDTO;
+import com.ISA.OnlyBunsBackend.dto.UserRegistration;
 import com.ISA.OnlyBunsBackend.service.PostService;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import java.util.concurrent.ExecutorService;
@@ -14,6 +16,7 @@ import org.springframework.dao.PessimisticLockingFailureException;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.junit.Assert.assertEquals;
+import static org.springframework.test.util.AssertionErrors.assertTrue;
 
 
 @RunWith(SpringRunner.class)
@@ -70,5 +73,47 @@ public class OnlyBunsBackendApplicationTests {
 
 		assertEquals(3, likeCount);
 	}
+
+
+	@Test
+	public void testConcurrentRegistration() throws InterruptedException {
+		final boolean[] conflictOccurred = {false};
+
+		Runnable registrationTask = () -> {
+			try {
+				UserRegistration req = new UserRegistration();
+				req.setUsername("conflict_user");
+				req.setPassword("pass123");
+				req.setFirstName("Test");
+				req.setLastName("User");
+				req.setEmail("test@example.com");
+
+				LocationDTO loc = new LocationDTO();
+				loc.setCity("Belgrade");
+				loc.setCountry("Serbia");
+				req.setLocation(loc);
+
+				userService.save(req);
+				System.out.println("Registracija uspešna.");
+			} catch (RuntimeException ex) {
+				System.out.println("Registracija nije uspela: " + ex.getMessage());
+				if (ex.getMessage().contains("exists")) {
+					conflictOccurred[0] = true;
+				}
+			}
+		};
+
+		Thread thread1 = new Thread(registrationTask);
+		Thread thread2 = new Thread(registrationTask);
+
+		thread1.start();
+		thread2.start();
+
+		thread1.join();
+		thread2.join();
+
+		assertTrue("Bar jedna registracija je trebalo da ne uspe zbog konflikta korisničkog imena", conflictOccurred[0]);
+	}
+
 
 }
