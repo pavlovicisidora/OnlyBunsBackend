@@ -67,6 +67,8 @@ public class WebSecurityConfig {
                 .requestMatchers("api/**").permitAll()
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")  // Swagger URLs
                 .permitAll()
+                .requestMatchers("/chat/**").authenticated()
+                .requestMatchers("/chat/**").permitAll()
                 .anyRequest().authenticated()  // For other routes, authentication is required
                 .and()
                 .cors().and()

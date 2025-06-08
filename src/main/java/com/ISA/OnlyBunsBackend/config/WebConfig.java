@@ -16,6 +16,6 @@ public class WebConfig implements WebMvcConfigurer {
                 .allowedOrigins("http://localhost:4200")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Permit only methods in use
                 .allowedHeaders("*")  // Permit all headers or specify specific headers as needed
-                .allowCredentials(true);  // Allow credentials if needed, such as for cookies or Authorization headers
+                .allowCredentials(true);
     }
 }

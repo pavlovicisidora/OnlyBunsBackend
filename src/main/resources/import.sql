@@ -26,3 +26,24 @@ insert into post_user_likes (user_id, post_id) values (1, 3);
 insert into post_user_likes (user_id, post_id) values (3, 1);
 insert into post_user_likes (user_id, post_id) values (1, 2);
 insert into post_user_likes (user_id, post_id) values (3, 2);
+
+-- Privatni chat između Marka i Ivane
+INSERT INTO chat (name, type, admin_id) VALUES (NULL, 'PRIVATE', NULL);
+-- Grupni chat sa adminom Markom
+INSERT INTO chat ( name, type, admin_id) VALUES ('Grupa: Druženje', 'GROUP', 1);
+
+-- Poruke za privatni chat (Marko i Ivana)
+INSERT INTO messages (content, timestamp, sender_id, chat_id) VALUES ('Zdravo Ivana!', '2025-01-15 12:00:00', 1, 1);
+INSERT INTO messages (content, timestamp, sender_id, chat_id) VALUES ('Zdravo Marko! Kako si?', '2025-01-15 12:05:00', 3, 1);
+-- Poruke za grupni chat
+INSERT INTO messages (content, timestamp, sender_id, chat_id) VALUES ('Dobrodošli svi!', '2025-01-16 10:00:00', 1, 2);
+INSERT INTO messages (content, timestamp, sender_id, chat_id)VALUES ('Hvala na pozivu!', '2025-01-16 10:15:00', 4, 2);
+INSERT INTO messages (content, timestamp, sender_id, chat_id) VALUES ('Kada ćemo sledeći sastanak?', '2025-01-16 10:30:00', 3, 2);
+
+INSERT INTO group_members (chat_id, user_id) VALUES (1, 1); -- Marko
+INSERT INTO group_members (chat_id, user_id) VALUES (1, 3); -- Ivana
+-- Dodavanje članova u grupni chat (Grupa: Druženje)
+INSERT INTO group_members (chat_id, user_id) VALUES (2, 1); -- Marko (admin)
+INSERT INTO group_members (chat_id, user_id) VALUES (2, 3); -- Ivana
+INSERT INTO group_members (chat_id, user_id) VALUES (2, 4); -- Bojan
+INSERT INTO group_members (chat_id, user_id) VALUES (2, 5); -- Milica
