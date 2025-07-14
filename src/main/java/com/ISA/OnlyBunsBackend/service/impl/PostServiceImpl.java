@@ -296,4 +296,27 @@ public class PostServiceImpl implements PostService {
         LOG.info("Products removed from cache!");
 
     }
+
+    @Override
+    public List<PostViewDTO> getAllPostsForMapView(Integer userId) {
+        List<Post> posts = postRepository.findAll();
+        List<PostViewDTO> postDTOs = new ArrayList<>();
+
+
+        for (Post post : posts) {
+            if(!post.getUser().getId().equals(userId)) {
+                PostViewDTO postDTO = new PostViewDTO();
+                postDTO.setId(post.getId());
+                postDTO.setUserId(post.getUser().getId());
+                postDTO.setDescription(post.getDescription());
+                postDTO.setImage(post.getImage());
+                postDTO.setLocation(post.getLocation());
+                postDTO.setLikeCount(post.getLikesCount());
+                if(!post.isDeleted()) {
+                    postDTOs.add(postDTO);
+                }
+            }
+        }
+        return postDTOs;
+    }
 }

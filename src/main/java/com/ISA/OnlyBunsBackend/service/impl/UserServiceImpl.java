@@ -66,6 +66,7 @@ public class UserServiceImpl implements UserService {
         dto.setUsername(user.getUsername());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
+        dto.setLocation(user.getLocation());
         dto.setRole(user.getRole());
         dto.setEmail(user.getEmail());
         dto.setPostCount(user.getPostCount());
@@ -365,6 +366,18 @@ public class UserServiceImpl implements UserService {
 
         }
         return userDTOs;
+    }
+
+
+
+    @Override
+    public void updateUserPassword(Integer userId, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String hashed = passwordEncoder.encode(newPassword);
+        user.setPassword(hashed);
+        userRepository.save(user);
     }
 }
 

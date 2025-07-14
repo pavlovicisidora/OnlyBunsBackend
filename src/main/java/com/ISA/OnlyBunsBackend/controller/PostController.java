@@ -150,4 +150,13 @@ public class PostController {
         List<PostViewDTO> posts = postService.getTop10MostLikedPostsOfAllTime();
         return ResponseEntity.ok(posts);
     }
+
+
+    @GetMapping("/posts-for-map")
+    @PreAuthorize("hasAnyRole('USER')")
+    public ResponseEntity<List<PostViewDTO>> getPostsForMap(Principal user) {
+        UsersViewDTO userMap = this.userService.getUserByUsername(user.getName());
+        List<PostViewDTO> posts = postService.getAllPostsForMapView(userMap.getId());
+        return ResponseEntity.ok(posts);
+    }
 }
