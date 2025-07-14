@@ -1,5 +1,6 @@
 package com.ISA.OnlyBunsBackend.dto;
 
+import com.ISA.OnlyBunsBackend.model.Location;
 import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.model.Role;
 import com.ISA.OnlyBunsBackend.model.User;
@@ -14,6 +15,7 @@ public class UsersViewDTO {
     private String lastName;
     private String email;
     private Role role;
+    private Location location;
     private int postCount;
     private int followersCount;
 
@@ -37,6 +39,7 @@ public class UsersViewDTO {
         this.lastName = user.getLastName();
         this.email = user.getEmail();
         this.role = user.getRole();
+        this.location = user.getLocation();
         this.postCount = user.getPostCount();
         this.followersCount = user.getFollowersCount();
     }
@@ -94,4 +97,11 @@ public class UsersViewDTO {
     public Role getRole() {return role;}
     public void setRole(Role role) {this.role = role;}
 
+    public Location getLocation() {
+        return location;
+    }
+
+    public void setLocation(Location location) {
+        this.location = location;
+    }
 }

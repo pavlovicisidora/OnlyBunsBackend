@@ -35,8 +35,10 @@ public interface UserService {
     UsersViewDTO unfollowUser(Integer followerId, Integer followedId);
     boolean isFollowing(int followerId, int followedUserId);
     List<UsersViewDTO> getFollowingUsers(Integer userId);
+    List<UsersViewDTO> getFollowersByUserId(Integer userId);
+
     UsersViewDTO findOneById(Integer id);
 
     List<UsersViewDTO> getTop10UsersWhoSharedMostLikesInLast7Days();
-
+    void updateUserPassword(Integer userId, String newPassword);
 }

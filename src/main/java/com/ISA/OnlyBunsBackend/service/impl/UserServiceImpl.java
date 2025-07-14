@@ -3,8 +3,11 @@ package com.ISA.OnlyBunsBackend.service.impl;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import com.ISA.OnlyBunsBackend.dto.LocationDTO;
 import com.ISA.OnlyBunsBackend.dto.PostViewDTO;
 import com.ISA.OnlyBunsBackend.dto.UserRegistration;
+import com.ISA.OnlyBunsBackend.exception.ResourceConflictException;
+import com.ISA.OnlyBunsBackend.mapper.LocationDTOMapper;
 import com.ISA.OnlyBunsBackend.model.Location;
 import com.ISA.OnlyBunsBackend.model.Post;
 import com.ISA.OnlyBunsBackend.model.Role;
@@ -15,6 +18,7 @@ import com.ISA.OnlyBunsBackend.service.RoleService;
 import com.ISA.OnlyBunsBackend.service.UserService;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -62,6 +66,7 @@ public class UserServiceImpl implements UserService {
         dto.setUsername(user.getUsername());
         dto.setFirstName(user.getFirstName());
         dto.setLastName(user.getLastName());
+        dto.setLocation(user.getLocation());
         dto.setRole(user.getRole());
         dto.setEmail(user.getEmail());
         dto.setPostCount(user.getPostCount());
@@ -77,27 +82,38 @@ public class UserServiceImpl implements UserService {
 		return userRepository.findAll();
 	}
 
-	@Override
+    @Override
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
 	public User save(UserRegistration userRequest) {
 		User u = new User();
 		u.setUsername(userRequest.getUsername());
-		
+
 		// pre nego sto postavimo lozinku u atribut hesiramo je kako bi se u bazi nalazila hesirana lozinka
 		// treba voditi racuna da se koristi isi password encoder bean koji je postavljen u AUthenticationManager-u kako bi koristili isti algoritam
 		u.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-		
+
 		u.setFirstName(userRequest.getFirstName());
 		u.setLastName(userRequest.getLastName());
-		Location location = locationServiceImpl.findById(userRequest.getLocation().getId());
-		u.setLocation(location);
+		LocationDTO location = locationServiceImpl.createLocation(userRequest.getLocation());
+		u.setLocation(LocationDTOMapper.fromDTOtoLocation(location));
 		u.setActivated(false);
 		u.setEmail(userRequest.getEmail());
 
 		// u primeru se registruju samo obicni korisnici i u skladu sa tim im se i dodeljuje samo rola USER
 		Role role = roleService.findByName("ROLE_USER");
 		u.setRole(role);
-		
-		return this.userRepository.save(u);
+
+        try {
+            // Simuliraj delay da bi testirao konkurentni pristup
+            Thread.sleep(2000);  // 2 sekunde
+
+            return this.userRepository.save(u);
+        } catch (DataIntegrityViolationException ex) {
+            throw new ResourceConflictException(0, "Username already exists (DB constraint)");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted during save");
+        }
 	}
 
 
@@ -198,6 +214,7 @@ public class UserServiceImpl implements UserService {
                 userDTO.setEmail(user.getEmail());
                 userDTO.setFirstName(user.getFirstName());
                 userDTO.setLastName(user.getLastName());
+                userDTO.setLocation(user.getLocation());
                 userDTO.setFollowersCount(user.getFollowersCount());
                 userDTO.setPostCount(user.getPostCount());
             }
@@ -313,6 +330,25 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+    public List<UsersViewDTO> getFollowersByUserId(Integer userId) {
+        List<User> folowers = userRepository.findFollowersByUserId(userId);
+        return folowers.stream()
+                .filter(user -> !user.isDeleted())
+                .map(user -> {
+                    UsersViewDTO userDTO = new UsersViewDTO();
+                    userDTO.setId(user.getId());
+                    userDTO.setUsername(user.getUsername());
+                    userDTO.setEmail(user.getEmail());
+                    userDTO.setFirstName(user.getFirstName());
+                    userDTO.setLastName(user.getLastName());
+                    userDTO.setFollowersCount(getFollowersCount(user.getId()));
+                    userDTO.setPostCount(user.getPostCount());
+                    return userDTO;
+                }).toList();
+    }
+
+
+    @Override
     public List<UsersViewDTO> getTop10UsersWhoSharedMostLikesInLast7Days() {
         List<User> users = userRepository.findTop10UsersWhoSharedMostLikesInLast7Days();
         List<UsersViewDTO> userDTOs = new ArrayList<>();
@@ -330,6 +366,18 @@ public class UserServiceImpl implements UserService {
 
         }
         return userDTOs;
+    }
+
+
+
+    @Override
+    public void updateUserPassword(Integer userId, String newPassword) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+
+        String hashed = passwordEncoder.encode(newPassword);
+        user.setPassword(hashed);
+        userRepository.save(user);
     }
 }
 

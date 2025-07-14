@@ -5,6 +5,7 @@ import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
 
+import com.ISA.OnlyBunsBackend.dto.PasswordChangeDTO;
 import com.ISA.OnlyBunsBackend.model.User;
 import com.ISA.OnlyBunsBackend.repository.UserRepository;
 import com.ISA.OnlyBunsBackend.service.LastLoginService;
@@ -94,6 +95,12 @@ public class UserController {
         return userService.getFollowingUsers(userId);
     }
 
+    @GetMapping("/followers/{userId}")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public List<UsersViewDTO> getFollowers(@PathVariable Integer userId) {
+        return userService.getFollowersByUserId(userId);
+    }
+
     @GetMapping("/top-10-users-for-likes")
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
     public ResponseEntity<List<UsersViewDTO>> getTopUsersWhoSharedMostLikesInLast7Days() {
@@ -111,4 +118,16 @@ public class UserController {
 
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/update-password")
+    @PreAuthorize("hasAnyRole('ADMIN', 'USER')")
+    public ResponseEntity<String> updatePassword(@RequestBody PasswordChangeDTO dto,
+                                                 Principal principal) {
+        String username = principal.getName();
+        UsersViewDTO user = userService.getUserByUsername(username);
+
+        userService.updateUserPassword(user.getId(), dto.getPassword());
+        return ResponseEntity.ok("Password updated successfully");
+    }
+
 }

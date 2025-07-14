@@ -34,8 +34,6 @@ public class EmailService {
 
         User registrated = userRepository.findByUsername(user.getUsername());
         System.out.println("Sync metoda se izvrsava u istom Threadu koji je i prihvatio zahtev. Thread id: " + Thread.currentThread().getId());
-        //Simulacija duze aktivnosti da bi se uocila razlika
-        Thread.sleep(1000);
         System.out.println("Slanje emaila...");
 
         SimpleMailMessage mail = new SimpleMailMessage();
@@ -43,7 +41,9 @@ public class EmailService {
         mail.setFrom(env.getProperty("spring.mail.username"));
 
         String activationLink = "http://localhost:4200/activation?id=" + registrated.getId();
-        mail.setText("Pozdrav " + user.getFirstName() + ",\n\nhvala što pratiš OnlyBuns.\n\nKlikni na sledeći link za aktivaciju naloga:\n" + activationLink);
+        mail.setSubject("Activate Your OnlyBuns Account");
+        mail.setText("Hello " + user.getFirstName() + ",\n\nThank you for signing up with us. Please confirm your email address to activate your account and get started.\n\nSimply click the button below:\n" + activationLink +
+        "\n\nIf you didn’t create this account, you can safely ignore this email.\n\n\n Best regards,\n" + "The OnlyBuns Team");
         javaMailSender.send(mail);
 
         System.out.println("Email poslat!");
