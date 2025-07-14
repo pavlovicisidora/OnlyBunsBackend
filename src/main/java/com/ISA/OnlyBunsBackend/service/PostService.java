@@ -22,14 +22,16 @@ public interface PostService {
     List<PostViewDTO> getAllPostsByUserId(Integer userId);
 
     boolean canUserComment(Integer userId);
-   int getAllPostsCount();
-   long getPostsCountInLastMonth();
-   @Cacheable(cacheNames = "allPostsInLast7Days")
-   List<PostViewDTO> getTop5MostLikedPostsInLast7Days();
+    int getAllPostsCount();
+    long getPostsCountInLastMonth();
+    @Cacheable(cacheNames = "allPostsInLast7Days")
+    List<PostViewDTO> getTop5MostLikedPostsInLast7Days();
 
     @Cacheable(cacheNames = "allPostsOfAllTimes")
-   List<PostViewDTO> getTop10MostLikedPostsOfAllTime();
+    List<PostViewDTO> getTop10MostLikedPostsOfAllTime();
 
     @CacheEvict(cacheNames = {"allPostsOfAllTimes", "allPostsInLast7Days"}, allEntries = true)
     void removeFromCache();
+
+    List<PostViewDTO> getAllPostsForMapView(Integer userId);
 }

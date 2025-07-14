@@ -40,5 +40,5 @@ public interface UserService {
     UsersViewDTO findOneById(Integer id);
 
     List<UsersViewDTO> getTop10UsersWhoSharedMostLikesInLast7Days();
-
+    void updateUserPassword(Integer userId, String newPassword);
 }

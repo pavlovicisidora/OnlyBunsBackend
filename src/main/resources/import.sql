@@ -11,9 +11,10 @@ insert into users (username, password, first_name, last_name, email, role_id, lo
 insert into users (username, password, first_name, last_name, email, role_id, location_id, is_activated, last_password_reset_date, is_deleted, followers_num) values ('bojan2014', '$2a$10$llkMryD7KBQc1EkOeBdRO.5lcyVR3TEGqXh4G.JadCBu3mdfS44Y.', 'Bojan', 'Bojanović', 'bojan@email.com', 2, 3, false, '2024-10-09 11:30:00', false, 0);
 insert into users (username, password, first_name, last_name, email, role_id, location_id, is_activated, last_password_reset_date, is_deleted, followers_num) values ('milica', '$2a$10$llkMryD7KBQc1EkOeBdRO.5lcyVR3TEGqXh4G.JadCBu3mdfS44Y.', 'Milica', 'Micić', 'milica@email.com', 2, 3, false, '2022-10-09 11:30:00', false, 0);
 
-insert into post (user_id, description, image, location_id, time_of_publishing, is_deleted) values (2, 'Post description 1', 'image1.jpg', 1, '2023-09-07 10:30:00', false);
+insert into post (user_id, description, image, location_id, time_of_publishing, is_deleted) values (2, 'Post description 1', 'image1.jpg', 3, '2023-09-07 10:30:00', false);
 insert into post (user_id, description, image, location_id, time_of_publishing, is_deleted) values (2, 'Post description 2', 'image2.jpg', 2, '2024-12-15 11:00:00', false);
 insert into post (user_id, description, image, location_id, time_of_publishing, is_deleted) values (3, 'Post description 3', 'image3.jpg', 1, '2024-12-12 11:30:00', false);
+insert into post (user_id, description, image, location_id, time_of_publishing, is_deleted) values (1, 'Post description 1', 'image1.jpg', 2, '2023-09-07 10:30:00', true);
 
 insert into comment (user_id, post_id, text, created_at) values (1, 1, 'Great post!', '2023-09-07 13:30:00');
 insert into comment (user_id, post_id, text, created_at) values (2, 2, 'Nice work.', '2024-12-16 11:00:00');
@@ -47,3 +48,9 @@ INSERT INTO group_members (chat_id, user_id) VALUES (2, 1); -- Marko (admin)
 INSERT INTO group_members (chat_id, user_id) VALUES (2, 3); -- Ivana
 INSERT INTO group_members (chat_id, user_id) VALUES (2, 4); -- Bojan
 INSERT INTO group_members (chat_id, user_id) VALUES (2, 5); -- Milica
+
+
+
+-- Lokacije za brigu o zecevima
+INSERT INTO rabbit_care (name, city, country, latitude, longitude) VALUES ('Zeka Spa Beograd', 'Beograd', 'Srbija', 44.7866, 20.4489);
+INSERT INTO rabbit_care (name, city, country, latitude, longitude) VALUES ('Bunny Paradise Novi Sad', 'Novi Sad', 'Srbija', 45.2671, 19.8335);
