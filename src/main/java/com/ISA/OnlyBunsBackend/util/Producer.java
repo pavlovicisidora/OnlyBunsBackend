@@ -1,5 +1,6 @@
 package com.ISA.OnlyBunsBackend.util;
 
+import com.ISA.OnlyBunsBackend.dto.AdvertPostDTO;
 import com.ISA.OnlyBunsBackend.dto.RabbitCareLocationDTO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,6 +35,16 @@ public class Producer {
             this.rabbitTemplate.convertAndSend(routingkey, message);
         } catch (Exception e) {
             log.error("Error while sending message: ", e);
+        }
+    }
+
+    public void sendAdvert(AdvertPostDTO message) {
+        try {
+            String json = objectMapper.writeValueAsString(message);
+            log.info("📤 Slanje reklame: " + json);
+            rabbitTemplate.convertAndSend("ad_exchange", "", message); // fanout -> routingKey je prazan
+        } catch (Exception e) {
+            log.error("❌ Greška prilikom slanja reklame", e);
         }
     }
 }

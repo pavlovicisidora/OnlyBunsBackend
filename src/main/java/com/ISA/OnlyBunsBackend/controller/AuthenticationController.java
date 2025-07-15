@@ -4,6 +4,7 @@ package com.ISA.OnlyBunsBackend.controller;
 import com.ISA.OnlyBunsBackend.dto.JwtAuthenticationRequest;
 import com.ISA.OnlyBunsBackend.dto.UserRegistration;
 import com.ISA.OnlyBunsBackend.dto.UserTokenState;
+import com.ISA.OnlyBunsBackend.dto.UsersViewDTO;
 import com.ISA.OnlyBunsBackend.exception.ResourceConflictException;
 import com.ISA.OnlyBunsBackend.model.User;
 import com.ISA.OnlyBunsBackend.security.auth.LoginAttemptService;
@@ -155,4 +156,7 @@ public class AuthenticationController {
         userService.updateUser(user); // Ažurirajte korisnika u bazi
         return ResponseEntity.ok().build(); // Vratite OK status bez tela odgovora
     }
+
+
+
 }
