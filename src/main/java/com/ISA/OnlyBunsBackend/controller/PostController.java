@@ -12,6 +12,7 @@ import com.ISA.OnlyBunsBackend.repository.UserRepository;
 import com.ISA.OnlyBunsBackend.service.LocationService;
 import com.ISA.OnlyBunsBackend.service.PostService;
 import com.ISA.OnlyBunsBackend.service.UserService;
+import com.ISA.OnlyBunsBackend.util.Producer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,9 @@ public class PostController {
     private UserService userService;
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    private Producer producer;
 
     @GetMapping
     public List<PostViewDTO> getPosts(Principal user) {
@@ -101,6 +105,20 @@ public class PostController {
         PostDTO newPost = postService.createPost(post);
         return ResponseEntity.ok().build();
     }
+
+
+    @PutMapping("/advertise/{postId}")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Void> advertisePost(@PathVariable Integer postId) {
+        PostViewDTO post = postService.getPostById(postId);
+        User user = userService.findById(post.getUserId());
+
+        AdvertPostDTO advertise = new AdvertPostDTO(post.getDescription(),post.getTimeOfPublishing(),user.getUsername());
+
+        producer.sendAdvert(advertise);
+        return ResponseEntity.ok().build();
+    }
+
 
 
     @DeleteMapping("/{postId}")

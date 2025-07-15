@@ -2,6 +2,7 @@ package com.ISA.OnlyBunsBackend.config;
 
 import com.ISA.OnlyBunsBackend.dto.RabbitCareLocationDTO;
 import com.ISA.OnlyBunsBackend.util.Consumer;
+import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Message;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.annotation.EnableRabbit;
@@ -27,6 +28,11 @@ public class RabbitConfig {
     @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
+    }
+
+    @Bean
+    public FanoutExchange advertExchange() {
+        return new FanoutExchange("advert-exchange");
     }
 
 
