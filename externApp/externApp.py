@@ -7,7 +7,7 @@ from datetime import datetime
 connection = pika.BlockingConnection(pika.ConnectionParameters(host='localhost'))
 channel = connection.channel()
 
-# Kreiranje fanout exchange-a (ako već ne postoji)
+# Kreiranje fanout exchange-a 
 channel.exchange_declare(exchange='ad_exchange', exchange_type='fanout')
 
 # Kreiraj privremeni, jedinstveni queue za ovu instancu agencije

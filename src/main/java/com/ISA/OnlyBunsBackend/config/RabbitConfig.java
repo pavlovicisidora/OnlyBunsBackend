@@ -32,7 +32,7 @@ public class RabbitConfig {
 
     @Bean
     public FanoutExchange advertExchange() {
-        return new FanoutExchange("advert-exchange");
+        return new FanoutExchange("advert-exchange");   //Kreiranje veze  na RabbitMQ koja je Fanout tipa
     }
 
 
