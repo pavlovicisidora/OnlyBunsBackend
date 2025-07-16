@@ -41,6 +41,7 @@ public class ImageCompression {
         try {
             Thumbnails.of(new File(uploadDirectory, path))
                     .scale(0.5)
+                    .outputQuality(0.8)
                     .toFile(new File(uploadDirectory, "compressed_" + path));
         } catch (IOException e) {
             throw new RuntimeException(e);

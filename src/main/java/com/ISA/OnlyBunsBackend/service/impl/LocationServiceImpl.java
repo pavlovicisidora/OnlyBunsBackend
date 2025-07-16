@@ -33,7 +33,7 @@ public class LocationServiceImpl implements LocationService {
     }
 
     @Override
-    @CachePut(cacheNames  = "locationCache", key = "#result.id")
+    @CachePut(cacheNames  = "locationCache", key = "#result.id") //Radi kesiranje rezultata metode
     public LocationDTO createLocation(LocationDTO locDto) {
         Location loc = LocationDTOMapper.fromDTOtoLocation(locDto);
         loc = locationRepository.save(loc);

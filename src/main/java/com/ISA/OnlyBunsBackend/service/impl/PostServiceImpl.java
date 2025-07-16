@@ -71,9 +71,9 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(isolation = Isolation.READ_COMMITTED) //Ili je ukucano kako treba ili se nista ne desi, primer sa bankom i novccem
     public PostViewDTO likePost(Integer postId, Integer userId) {
-        Post post = entityManager.find(Post.class, postId, LockModeType.PESSIMISTIC_WRITE);
+        Post post = entityManager.find(Post.class, postId, LockModeType.PESSIMISTIC_WRITE); // zaključava red (tj. Post entitet) u bazi tako da nijedan drugi korisnik ne može da ga čita ni piše dok traje transakcija.
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new EntityNotFoundException("User not found"));
