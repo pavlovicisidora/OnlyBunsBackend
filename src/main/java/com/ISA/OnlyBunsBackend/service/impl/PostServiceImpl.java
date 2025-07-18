@@ -212,7 +212,7 @@ public class PostServiceImpl implements PostService {
         List<PostViewDTO> postDTOs = new ArrayList<>();
 
         for (Post post : posts) {
-            if(post.getUser().getId().equals(userId)) {
+            if(post.getUser().getId().equals(userId) && !post.isDeleted()) {
                 PostViewDTO postDTO = new PostViewDTO();
                 postDTO.setId(post.getId());
                 postDTO.setUserId(post.getUser().getId());
