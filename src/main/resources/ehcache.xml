@@ -5,6 +5,7 @@
 
     <!-- Persistent cache directory -->
     <persistence directory="onlyBunsBackend/cache" />
+    <!--<persistence directory="${ehcache.persistence.dir}" />-->
 
     <!-- Default cache template -->
     <cache-template name="default">

@@ -40,6 +40,7 @@ public class OnlyBunsBackendApplicationTests {
 			System.out.println("Started Thread 2");
 			try {
 				Thread.sleep(200);
+
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

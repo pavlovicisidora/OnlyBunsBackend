@@ -279,6 +279,13 @@ public class UserServiceImpl implements UserService {
         follower.getFollowings().add(followed);
         //followed.getFollowers().add(follower);
         followed.setFollowersNum(followed.getFollowersNum() + 1);
+        /*try {
+            System.out.println("Thread " + Thread.currentThread().getId() + " locked user " + followedId + ". Pausing...");
+            Thread.sleep(500); // Pauza od 500ms
+            System.out.println("Thread " + Thread.currentThread().getId() + " finished pausing.");
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt(); // Prekini thread ako je prekinut
+        }*/
         userRepository.save(follower);
         userRepository.save(followed);
         return new UsersViewDTO(followed);
