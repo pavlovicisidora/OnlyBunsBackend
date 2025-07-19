@@ -65,6 +65,8 @@ public class WebSecurityConfig {
         http.authorizeRequests()
                 .requestMatchers("/auth/**").permitAll()
                 .requestMatchers("api/**").permitAll()
+                .requestMatchers("/call-backend-manual-lb").permitAll()
+                .requestMatchers("/hello-from-backend").permitAll()
                 .requestMatchers("/actuator/**").permitAll()    //Pristpud za Prometheus
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")  // Swagger URLs
                 .permitAll()
