@@ -67,9 +67,10 @@ public class WebSecurityConfig {
                 .requestMatchers("api/**").permitAll()
                 .requestMatchers("/call-backend-manual-lb").permitAll()
                 .requestMatchers("/hello-from-backend").permitAll()
-                .requestMatchers("/actuator/**").permitAll()    //Pristpud za Prometheus
+                .requestMatchers("/actuator/**").permitAll()    //Pristup za Prometheus
                 .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**")  // Swagger URLs
                 .permitAll()
+                .requestMatchers("/socket/**").permitAll()
                 .requestMatchers("/chat/**").authenticated()
                 .requestMatchers("/chat/**").permitAll()
                 .anyRequest().authenticated()  // For other routes, authentication is required

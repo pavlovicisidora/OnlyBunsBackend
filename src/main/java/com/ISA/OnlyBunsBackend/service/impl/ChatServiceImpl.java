@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ChatServiceImpl implements ChatService {
@@ -137,5 +138,13 @@ public class ChatServiceImpl implements ChatService {
 
         Message savedMessage = messageRepository.save(message);
         return new MessageDTO(savedMessage);
+    }
+
+    @Override
+    public List<String> getAllUsernamesExceptCurrent(String currentUsername) {
+        return userRepository.findAllByUsernameNot(currentUsername)
+                .stream()
+                .map(User::getUsername)
+                .collect(Collectors.toList());
     }
 }
