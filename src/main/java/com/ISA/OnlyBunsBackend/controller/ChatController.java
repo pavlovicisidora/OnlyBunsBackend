@@ -57,4 +57,9 @@ public class ChatController {
     public MessageDTO sendMessage(@PathVariable Integer chatId, @RequestParam String senderUsername, @RequestParam String content) {
         return chatService.sendMessage(chatId, senderUsername, content);
     }
+
+    @GetMapping("/all-users-for-group")
+    public List<String> getAllUsersForGroup(Principal principal) {
+        return chatService.getAllUsernamesExceptCurrent(principal.getName());
+    }
 }

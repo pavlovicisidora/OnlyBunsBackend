@@ -61,4 +61,10 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT COUNT(u) FROM User u WHERE u.role.id = 2")
     Integer countUsers();
+
+    @Query("SELECT u FROM User u WHERE u.username != :currentUsername")
+    List<User> findAllByUsernameNot(@Param("currentUsername") String currentUsername);
+
+    List<User> findAll();
+
 }

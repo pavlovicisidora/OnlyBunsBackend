@@ -14,4 +14,5 @@ public interface ChatService {
     ChatDTO addParticipantToGroup(Integer chatId, String username, String loggedInUser);
     void removeParticipantFromGroup(Integer chatId, String username, String loggedInUser);
     MessageDTO sendMessage(Integer chatId, String senderUsername, String content);
+    List<String> getAllUsernamesExceptCurrent(String currentUsername);
 }
